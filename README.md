@@ -1,8 +1,6 @@
-# (C) Copyright 2018 Hewlett Packard Enterprise Development LP.
-
 # Python Language Binding for HPE OneSphere Composable API (ns-api-python)
 
-The Python language binding package for Python developers to call HPE OneSphere Composable APIs
+The Python language binding package for Python developers to call HPE OneSphere APIs
 
 ## Prerequisites
 
