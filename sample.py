@@ -32,7 +32,6 @@ def run():
     print("GetStatus: " + json.dumps(osinst.GetStatus()))
     print("GetConnectApp: " + json.dumps(osinst.GetConnectApp("windows")))
     print("GetSession: " + json.dumps(osinst.GetSession()))
-    print("GetSessionIdp: " + json.dumps(osinst.GetSessionIdp("username")))
     print("GetAccount: " + json.dumps(osinst.GetAccount()))
     print("GetProviderTypes: " + json.dumps(osinst.GetProviderTypes()))
     print("GetZoneTypes: " + json.dumps(osinst.GetZoneTypes()))
