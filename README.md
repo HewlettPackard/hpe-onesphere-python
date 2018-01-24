@@ -1,4 +1,4 @@
-# Python Language Binding for HPE OneSphere Composable API (ns-api-python)
+# Python Language Binding for HPE OneSphere APIs
 
 The Python language binding package for Python developers to call HPE OneSphere APIs
 
