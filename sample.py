@@ -22,27 +22,27 @@
 
 import json
 
-# for Python 2.7.x, import the ncsmodule.ncsmodule2
-import ncsmodule.ncsmodule3 as ncsm
+# for Python 2.7.x, import the onesphere.osbinding2
+import onesphere.osbinding3 as osb
 
 def run():
 
-    ncs = ncsm.NCSClient('https://ncs-host-url', 'username', 'password')
+    osinst = osb.OSClient('https://onesphere-host-url', 'username', 'password')
 
-    print("GetStatus: " + json.dumps(ncs.GetStatus()))
-    print("GetConnectApp: " + json.dumps(ncs.GetConnectApp("windows")))
-    print("GetSession: " + json.dumps(ncs.GetSession()))
-    print("GetSessionIdp: " + json.dumps(ncs.GetSessionIdp("username")))
-    print("GetAccount: " + json.dumps(ncs.GetAccount()))
-    print("GetProviderTypes: " + json.dumps(ncs.GetProviderTypes()))
-    print("GetZoneTypes: " + json.dumps(ncs.GetZoneTypes()))
-    print("GetServiceTypes: " + json.dumps(ncs.GetServiceTypes()))
-    print("GetRoles: " + json.dumps(ncs.GetRoles()))
-    print("GetUsers: " + json.dumps(ncs.GetUsers()))
-    print("GetTagKeys: " + json.dumps(ncs.GetTagKeys()))
-    print("GetTags: " + json.dumps(ncs.GetTags()))
+    print("GetStatus: " + json.dumps(osinst.GetStatus()))
+    print("GetConnectApp: " + json.dumps(osinst.GetConnectApp("windows")))
+    print("GetSession: " + json.dumps(osinst.GetSession()))
+    print("GetSessionIdp: " + json.dumps(osinst.GetSessionIdp("username")))
+    print("GetAccount: " + json.dumps(osinst.GetAccount()))
+    print("GetProviderTypes: " + json.dumps(osinst.GetProviderTypes()))
+    print("GetZoneTypes: " + json.dumps(osinst.GetZoneTypes()))
+    print("GetServiceTypes: " + json.dumps(osinst.GetServiceTypes()))
+    print("GetRoles: " + json.dumps(osinst.GetRoles()))
+    print("GetUsers: " + json.dumps(osinst.GetUsers()))
+    print("GetTagKeys: " + json.dumps(osinst.GetTagKeys()))
+    print("GetTags: " + json.dumps(osinst.GetTags()))
 
-    del ncs
+    del osinst
 
 
 if __name__ == '__main__':

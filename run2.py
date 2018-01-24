@@ -22,27 +22,27 @@
 
 import json
 
-import ncsmodule.ncsmodule2 as ncsm
+import onesphere.osbinding2 as osb
 
 def run():
 
-    #ncs = ncsm.NCSClient('https://tme-beta-p1.stackbeta.hpe.com', 'peng.liu@hpe.com', 'Passw0rd!')
-    ncs = ncsm.NCSClient('https://onespheretme1.stackbeta.hpe.com', 'peng.liu@hpe.com', 'Passw0rd!')
+    #osinst = osb.OSClient('https://tme-beta-p1.stackbeta.hpe.com', 'peng.liu@hpe.com', 'Passw0rd!')
+    osinst = osb.OSClient('https://onespheretme1.stackbeta.hpe.com', 'peng.liu@hpe.com', 'Passw0rd!')
 
-    print("--- GetStatus: " + json.dumps(ncs.GetStatus()))
-    print("--- GetConnectApp: " + json.dumps(ncs.GetConnectApp("windows")))
-    print("--- GetSession: " + json.dumps(ncs.GetSession()))
-    print("--- GetSessionIdp: " + json.dumps(ncs.GetSessionIdp("peng")))
-    print("--- GetAccount: " + json.dumps(ncs.GetAccount()))
-    print("--- GetProviderTypes: " + json.dumps(ncs.GetProviderTypes()))
-    print("--- GetZoneTypes: " + json.dumps(ncs.GetZoneTypes()))
-    print("--- GetServiceTypes: " + json.dumps(ncs.GetServiceTypes()))
-    print("--- GetRoles: " + json.dumps(ncs.GetRoles()))
-    print("--- GetUsers: " + json.dumps(ncs.GetUsers()))
-    print("--- GetTagKeys: " + json.dumps(ncs.GetTagKeys()))
-    print("--- GetTags: " + json.dumps(ncs.GetTags()))
+    print("--- GetStatus: " + json.dumps(osinst.GetStatus()))
+    print("--- GetConnectApp: " + json.dumps(osinst.GetConnectApp("windows")))
+    print("--- GetSession: " + json.dumps(osinst.GetSession()))
+    print("--- GetSessionIdp: " + json.dumps(osinst.GetSessionIdp("peng")))
+    print("--- GetAccount: " + json.dumps(osinst.GetAccount()))
+    print("--- GetProviderTypes: " + json.dumps(osinst.GetProviderTypes()))
+    print("--- GetZoneTypes: " + json.dumps(osinst.GetZoneTypes()))
+    print("--- GetServiceTypes: " + json.dumps(osinst.GetServiceTypes()))
+    print("--- GetRoles: " + json.dumps(osinst.GetRoles()))
+    print("--- GetUsers: " + json.dumps(osinst.GetUsers()))
+    print("--- GetTagKeys: " + json.dumps(osinst.GetTagKeys()))
+    print("--- GetTags: " + json.dumps(osinst.GetTags()))
 
-    del ncs
+    del osinst
 
 
 if __name__ == '__main__':
