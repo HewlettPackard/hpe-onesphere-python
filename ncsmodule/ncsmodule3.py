@@ -1,3 +1,5 @@
+# (C) Copyright 2018 Hewlett Packard Enterprise Development LP.
+
 # ncsmodule/ncsmodule.py
 
 import requests
