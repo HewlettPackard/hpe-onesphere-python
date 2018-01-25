@@ -1,5 +1,5 @@
 *.pyc
-run.py
+run*.py
 test/
 test.py
 
