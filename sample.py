@@ -22,7 +22,8 @@
 
 import json
 
-# for Python 2.7.x, import the onesphere.osbinding2
+# for Python 2 (2.7.x and above), import the onesphere.osbinding2
+# for Python 3 (3.5.2 and above), import the onesphere.osbinding3
 import onesphere.osbinding3 as osb
 
 def run():
