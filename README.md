@@ -23,7 +23,7 @@ sudo pip install requests
 
 ## Usage
 
-Copy the ncsmodule into your Python project folder.
+Copy the onesphere into your Python project folder.
 
 Example:
 
