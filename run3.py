@@ -26,8 +26,7 @@ import onesphere.osbinding3 as osb
 
 def run():
 
-    #osinst = osb.OSClient('https://tme-beta-p1.stackbeta.hpe.com', 'peng.liu@hpe.com', 'Passw0rd!')
-    osinst = osb.OSClient('https://onespheretme1.stackbeta.hpe.com', 'peng.liu@hpe.com', 'Passw0rd!')
+    osinst = osb.OSClient('https://ninja3.dev.hpedevops.net', 'carla@hpe.com', 'Passw0rd!')
 
     print("--- GetStatus: " + json.dumps(osinst.GetStatus()))
     print("--- GetConnectApp: " + json.dumps(osinst.GetConnectApp("windows")))
