@@ -67,6 +67,7 @@ class OSClient:
     URI_REGIONS                     = "/regions"
     URI_ZONE_TYPES                  = "/zone-types"
     URI_ZONES                       = "/zones"
+    URI_CATALOG_TYPES               = "/catalog-types"
     URI_CATALOGS                    = "/catalogs"
     URI_SERVICE_TYPES               = "/service-types"
     URI_SERVICES                    = "/services"
@@ -348,6 +349,13 @@ class OSClient:
     @stringnotempty(['zone_id'])
     def GetZoneApplianceImage(self, zone_id):
         full_url = self.rest_prefix + OSClient.URI_ZONES + "/" + zone_id + "/appliance-image"
+        r = requests.get(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    # Catalog Types APIs
+
+    def GetCatalogTypes(self):
+        full_url = self.rest_prefix + OSClient.URI_CATALOG_TYPES
         r = requests.get(full_url, headers=OSClient.HEADERS)
         return r.json()
 
