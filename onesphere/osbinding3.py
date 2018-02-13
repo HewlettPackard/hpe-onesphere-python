@@ -61,6 +61,7 @@ class OSClient:
     URI_STATUS                      = "/status"
     URI_CONNECT_APP                 = "/connect-app"
     URI_ACCOUNT                     = "/account"
+    URI_APPLIANCES                  = "/appliances"
     URI_PROVIDER_TYPES              = "/provider-types"
     URI_PROVIDERS                   = "/providers"
     URI_REGIONS                     = "/regions"
@@ -147,6 +148,51 @@ class OSClient:
         r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
         return r.json()
 
+    # Appliances APIs
+
+    def GetAppliances(self):
+        full_url = self.rest_prefix + OSClient.URI_APPLIANCES
+        r = requests.get(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    def CreateAppliance(self, ep_address, ep_username, ep_password, 
+                        name, region_uri, appliance_type):
+        full_url = self.rest_prefix + OSClient.URI_APPLIANCES
+        end_point = {"address": ep_address,
+                     "password": ep_password,
+                     "username": ep_username}
+        data={"endpoint": end_point, 
+              "name": name,
+              "regionUri": region_uri,
+              "type": appliance_type}
+        r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
+        return r.json()
+
+    @stringnotempty(['appliance_id'])
+    def GetAppliance(self, appliance_id):
+        full_url = self.rest_prefix + OSClient.URI_APPLIANCES + "/" + appliance_id
+        r = requests.get(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    @stringnotempty(['appliance_id'])
+    def DeleteAppliance(self, provider_id):
+        full_url = self.rest_prefix + OSClient.URI_APPLIANCES + "/" + appliance_id
+        r = requests.delete(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    # info_array: [{os, path, value}]
+    @stringnotempty(['appliance_id'])
+    def UpdateAppliance(self, appliance_id, info_array):
+        if (len(info_array) == 0):
+            raise Exception("info_array should be a non-empty array.")
+        try:
+            json.loads(info_array)
+        except ValueError:
+            raise Exception("info_array should be in JSON format.")
+        full_url = self.rest_prefix + OSClient.URI_APPLIANCES + "/" + appliance_id
+        r = requests.put(full_url, headers=OSClient.HEADERS, json=info_array)
+        return r.json()
+
     # Providers APIs
 
     def GetProviderTypes(self):
@@ -155,7 +201,7 @@ class OSClient:
         return r.json()
 
     def GetProviders(self, parent_uri, provider_type_uri):
-        full_url = self.rest_prefix + OSClient.URI_PROVIDER_TYPES
+        full_url = self.rest_prefix + OSClient.URI_PROVIDERS
         params = {"parentUri": parent_uri, "providerTypeUri": provider_type_uri}
         r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
         return r.json()
