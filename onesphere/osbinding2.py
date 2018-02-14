@@ -151,9 +151,14 @@ class OSClient:
 
     # Appliances APIs
 
-    def GetAppliances(self):
+    def GetAppliances(self, name="", region_uri=""):
         full_url = self.rest_prefix + OSClient.URI_APPLIANCES
-        r = requests.get(full_url, headers=OSClient.HEADERS)
+        params = {}
+        if name.strip():
+            params["name"] = name
+        if region_uri.strip():
+            params["regionUri"] = region_uri
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
         return r.json()
 
     def CreateAppliance(self, ep_address, ep_username, ep_password, 
@@ -361,16 +366,28 @@ class OSClient:
 
     # Catalogs APIs
 
-    def GetCatalogs(self, query):
+    # view: "full" - return related content
+    def GetCatalogs(self, query="", view=""):
         full_url = self.rest_prefix + OSClient.URI_CATALOGS
-        params = {"q": query}
+        params = {}
+        if query.strip():
+            params["userQuery"] = query.strip()
+        if view.strip():
+            params["view"] = view.strip()
         r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
         return r.json()
 
-    @stringnotempty(['name', 'url'])
-    def CreateCatalog(self, name, url):
+    @stringnotempty(['access_key', 'catalog_type_uri', 'name', 'password', 'region_name', 'secret_key', 'url', 'username'])
+    def CreateCatalog(self, access_key, catalog_type_uri, name, password, region_name, secret_key, url, username):
         full_url = self.rest_prefix + OSClient.URI_CATALOGS
-        data = {"name": name, "url": url}
+        data = {"accessKey": access_key, 
+                "catalogTypeUri": catalog_type_uri, 
+                "name": name, 
+                "password": password, 
+                "regionName": region_name, 
+                "secretKey": secret_key, 
+                "url": url, 
+                "username": username}
         r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
         return r.json()
 
@@ -382,18 +399,16 @@ class OSClient:
 
     @notimplementedyet
     @stringnotempty(['catalog_id'])
-    def UpdateCatalog(self, catalog_id, name, status, 
-                      uri, url, service_type_uri, 
-                      time_created, time_modified):
+    def DeleteCatalog(self, catalog_id):
         full_url = self.rest_prefix + OSClient.URI_CATALOGS + "/" + catalog_id
-        data = {"created": time_created,
-                "id": catalog_id, 
-                "modified": time_modified,
-                "name": name,
-                "status": status,
-                "uri": uri,
-                "url": url,
-                "serviceTypeUri": service_type_uri}
+        r = requests.delete(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    @stringnotempty(['catalog_id', 'name', 'password', 'access_key', 'secret_key', 'region_name', 'state'])
+    def UpdateCatalog(self, catalog_id, name, password, access_key, secret_key, region_name, state):
+        full_url = self.rest_prefix + OSClient.URI_CATALOGS + "/" + catalog_id
+        data = {"name": name, "password": password, "accessKey": access_key, 
+                "secretKey": secret_key, "regionName": region_name, "state": state}
         r = requests.put(full_url, headers=OSClient.HEADERS, json=data)
         return r.json()
 
