@@ -56,34 +56,34 @@ def stringnotempty(arguments):
 
 class OSClient:
 
-    URI_SESSION                     = "/session"
-    URI_SESSION_IDP                 = "/session/idp"
-    URI_STATUS                      = "/status"
-    URI_CONNECT_APP                 = "/connect-app"
     URI_ACCOUNT                     = "/account"
     URI_APPLIANCES                  = "/appliances"
+    URI_CATALOG_TYPES               = "/catalog-types"
+    URI_CATALOGS                    = "/catalogs"
+    URI_CONNECT_APP                 = "/connect-app"
+    URI_DEPLOYMENTS                 = "/deployments"
+    URI_EVENTS                      = "/events"
+    URI_KEYPAIRS                    = "/keypairs"
+    URI_MEMBERSHIPS                 = "/memberships"
+    URI_METRICS                     = "/metrics"
+    URI_NETWORKS                    = "/networks"
     URI_PROVIDER_TYPES              = "/provider-types"
     URI_PROVIDERS                   = "/providers"
     URI_REGIONS                     = "/regions"
-    URI_ZONE_TYPES                  = "/zone-types"
-    URI_ZONES                       = "/zones"
-    URI_CATALOG_TYPES               = "/catalog-types"
-    URI_CATALOGS                    = "/catalogs"
+    URI_ROLES                       = "/roles"
     URI_SERVICE_TYPES               = "/service-types"
     URI_SERVICES                    = "/services"
-    URI_VIRTUAL_MACHINE_PROFILES    = "/virtual-machine-profiles"
-    URI_NETWORKS                    = "/networks"
-    URI_WORKSPACES                  = "/workspaces"
-    URI_DEPLOYMENTS                 = "/deployments"
-    URI_MEMBERSHIPS                 = "/memberships"
-    URI_ROLES                       = "/roles"
-    URI_USERS                       = "/users"
-    URI_METRICS                     = "/metrics"
-    URI_EVENTS                      = "/events"
-    URI_VOLUMES                     = "/volumes"
+    URI_SESSION                     = "/session"
+    URI_SESSION_IDP                 = "/session/idp"
+    URI_STATUS                      = "/status"
     URI_TAG_KEYS                    = "/tag-keys"
     URI_TAGS                        = "/tags"
-    URI_KEYPAIRS                    = "/keypairs"
+    URI_USERS                       = "/users"
+    URI_VIRTUAL_MACHINE_PROFILES    = "/virtual-machine-profiles"
+    URI_VOLUMES                     = "/volumes"
+    URI_WORKSPACES                  = "/workspaces"
+    URI_ZONE_TYPES                  = "/zone-types"
+    URI_ZONES                       = "/zones"
 
     HEADERS = {'Accept': 'application/json', 'Content-Type': 'application/json'}
 
@@ -110,35 +110,6 @@ class OSClient:
             self.token = r_json["token"]
             self.user_uri = r_json["userUri"]
             OSClient.HEADERS["Authorization"] = r_json["token"]
-
-    def GetStatus(self):
-        full_url = self.rest_prefix + OSClient.URI_STATUS
-        r = requests.get(full_url, headers=OSClient.HEADERS)
-        return r.json()
-
-    # os: windows or mac
-    @stringnotempty(['os'])
-    def GetConnectApp(self, os="windows"):
-        full_url = self.rest_prefix + OSClient.URI_CONNECT_APP
-        params = {"os": os}
-        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
-        return r.json()
-
-    # Session APIs
-
-    def GetSession(self, view="full"):
-        full_url = self.rest_prefix + OSClient.URI_SESSION
-        params = {"view": view}
-        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
-        return r.json()
-
-    @notimplementedyet
-    @stringnotempty(['user_name'])
-    def GetSessionIdp(self, user_name):
-        full_url = self.rest_prefix + OSClient.URI_SESSION_IDP
-        params = {"userName": user_name}
-        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
-        return r.json()
 
     # Account APIs
 
@@ -197,6 +168,157 @@ class OSClient:
             raise Exception("info_array should be in JSON format.")
         full_url = self.rest_prefix + OSClient.URI_APPLIANCES + "/" + appliance_id
         r = requests.put(full_url, headers=OSClient.HEADERS, json=info_array)
+        return r.json()
+
+    # Catalog Types APIs
+
+    def GetCatalogTypes(self):
+        full_url = self.rest_prefix + OSClient.URI_CATALOG_TYPES
+        r = requests.get(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    # Catalogs APIs
+
+    # view: "full" - return related content
+    def GetCatalogs(self, query="", view=""):
+        full_url = self.rest_prefix + OSClient.URI_CATALOGS
+        params = {}
+        if query.strip():
+            params["userQuery"] = query.strip()
+        if view.strip():
+            params["view"] = view.strip()
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
+        return r.json()
+
+    @stringnotempty(['access_key', 'catalog_type_uri', 'name', 'password', 'region_name', 'secret_key', 'url', 'username'])
+    def CreateCatalog(self, access_key, catalog_type_uri, name, password, region_name, secret_key, url, username):
+        full_url = self.rest_prefix + OSClient.URI_CATALOGS
+        data = {"accessKey": access_key, 
+                "catalogTypeUri": catalog_type_uri, 
+                "name": name, 
+                "password": password, 
+                "regionName": region_name, 
+                "secretKey": secret_key, 
+                "url": url, 
+                "username": username}
+        r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
+        return r.json()
+
+    @stringnotempty(['catalog_id'])
+    def GetCatalog(self, catalog_id):
+        full_url = self.rest_prefix + OSClient.URI_CATALOGS + "/" + catalog_id
+        r = requests.get(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    @notimplementedyet
+    @stringnotempty(['catalog_id'])
+    def DeleteCatalog(self, catalog_id):
+        full_url = self.rest_prefix + OSClient.URI_CATALOGS + "/" + catalog_id
+        r = requests.delete(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    @stringnotempty(['catalog_id', 'name', 'password', 'access_key', 'secret_key', 'region_name', 'state'])
+    def UpdateCatalog(self, catalog_id, name, password, access_key, secret_key, region_name, state):
+        full_url = self.rest_prefix + OSClient.URI_CATALOGS + "/" + catalog_id
+        data = {"name": name, "password": password, "accessKey": access_key, 
+                "secretKey": secret_key, "regionName": region_name, "state": state}
+        r = requests.put(full_url, headers=OSClient.HEADERS, json=data)
+        return r.json()
+
+    # Connect App APIs
+
+    # os: windows or mac
+    @stringnotempty(['os'])
+    def GetConnectApp(self, os="windows"):
+        full_url = self.rest_prefix + OSClient.URI_CONNECT_APP
+        params = {"os": os}
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
+        return r.json()
+
+    # Deployments APIs
+
+    # view: "full" - get related resources of zone, service and volume details.
+    def GetDeployments(self, query="", user_query="", view=""):
+        full_url = self.rest_prefix + OSClient.URI_DEPLOYMENTS
+        params = {}
+        if query.strip():
+            params["query"] = query
+        if user_query.strip():
+            params["userQuery"] = user_query
+        if view.strip():
+            params["view"] = view
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
+        return r.json()
+
+    def CreateDeployment(self, info):
+        try:
+            json.loads(info)
+        except ValueError:
+            raise Exception("info should be in JSON format.")
+        full_url = self.rest_prefix + OSClient.URI_DEPLOYMENTS
+        r = requests.post(full_url, headers=OSClient.HEADERS, json=info)
+        return r.json()
+
+    @stringnotempty(['deployment_id'])
+    def GetDeployment(self, deployment_id, view="full"):
+        full_url = self.rest_prefix + OSClient.URI_DEPLOYMENTS + "/" + deployment_id
+        params = {"view": view}
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
+        return r.json()
+
+    @stringnotempty(['deployment_id'])
+    def UpdateDeployment(self, deployment_id, info):
+        try:
+            json.loads(info)
+        except ValueError:
+            raise Exception("info should be in JSON format.")
+        full_url = self.rest_prefix + OSClient.URI_DEPLOYMENTS + "/" + deployment_id
+        r = requests.put(full_url, headers=OSClient.HEADERS, json=info)
+        return r.json()
+
+    @stringnotempty(['deployment_id'])
+    def DeleteDeployment(self, deployment_id):
+        full_url = self.rest_prefix + OSClient.URI_DEPLOYMENTS + "/" + deployment_id
+        r = requests.delete(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    # action_type: one of restart|resume|start|stop|suspend.
+    @stringnotempty(['deployment_id', 'action_type'])
+    def ActionOnDeployment(self, deployment_id, action_type, force=True):
+        if action_type not in ["restart", "resume", "start", "stop", "suspend"]:
+            raise Exception("action type must be one of restart|resume|start|stop|suspend.")
+        full_url = self.rest_prefix + OSClient.URI_DEPLOYMENTS + "/" + deployment_id + "/actions"
+        data = {"force": force, "type": action_type}
+        r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
+        return r.json()
+
+    @stringnotempty(['deployment_id'])
+    def GetDeploymentConsole(self, deployment_id):
+        full_url = self.rest_prefix + OSClient.URI_DEPLOYMENTS + "/" + deployment_id + "/console"
+        r = requests.get(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    # Status APIs
+
+    def GetStatus(self):
+        full_url = self.rest_prefix + OSClient.URI_STATUS
+        r = requests.get(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    # Session APIs
+
+    def GetSession(self, view="full"):
+        full_url = self.rest_prefix + OSClient.URI_SESSION
+        params = {"view": view}
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
+        return r.json()
+
+    @notimplementedyet
+    @stringnotempty(['user_name'])
+    def GetSessionIdp(self, user_name):
+        full_url = self.rest_prefix + OSClient.URI_SESSION_IDP
+        params = {"userName": user_name}
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
         return r.json()
 
     # Providers APIs
@@ -357,61 +479,6 @@ class OSClient:
         r = requests.get(full_url, headers=OSClient.HEADERS)
         return r.json()
 
-    # Catalog Types APIs
-
-    def GetCatalogTypes(self):
-        full_url = self.rest_prefix + OSClient.URI_CATALOG_TYPES
-        r = requests.get(full_url, headers=OSClient.HEADERS)
-        return r.json()
-
-    # Catalogs APIs
-
-    # view: "full" - return related content
-    def GetCatalogs(self, query="", view=""):
-        full_url = self.rest_prefix + OSClient.URI_CATALOGS
-        params = {}
-        if query.strip():
-            params["userQuery"] = query.strip()
-        if view.strip():
-            params["view"] = view.strip()
-        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
-        return r.json()
-
-    @stringnotempty(['access_key', 'catalog_type_uri', 'name', 'password', 'region_name', 'secret_key', 'url', 'username'])
-    def CreateCatalog(self, access_key, catalog_type_uri, name, password, region_name, secret_key, url, username):
-        full_url = self.rest_prefix + OSClient.URI_CATALOGS
-        data = {"accessKey": access_key, 
-                "catalogTypeUri": catalog_type_uri, 
-                "name": name, 
-                "password": password, 
-                "regionName": region_name, 
-                "secretKey": secret_key, 
-                "url": url, 
-                "username": username}
-        r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
-        return r.json()
-
-    @stringnotempty(['catalog_id'])
-    def GetCatalog(self, catalog_id):
-        full_url = self.rest_prefix + OSClient.URI_CATALOGS + "/" + catalog_id
-        r = requests.get(full_url, headers=OSClient.HEADERS)
-        return r.json()
-
-    @notimplementedyet
-    @stringnotempty(['catalog_id'])
-    def DeleteCatalog(self, catalog_id):
-        full_url = self.rest_prefix + OSClient.URI_CATALOGS + "/" + catalog_id
-        r = requests.delete(full_url, headers=OSClient.HEADERS)
-        return r.json()
-
-    @stringnotempty(['catalog_id', 'name', 'password', 'access_key', 'secret_key', 'region_name', 'state'])
-    def UpdateCatalog(self, catalog_id, name, password, access_key, secret_key, region_name, state):
-        full_url = self.rest_prefix + OSClient.URI_CATALOGS + "/" + catalog_id
-        data = {"name": name, "password": password, "accessKey": access_key, 
-                "secretKey": secret_key, "regionName": region_name, "state": state}
-        r = requests.put(full_url, headers=OSClient.HEADERS, json=data)
-        return r.json()
-
     # Service Types APIs
 
     def GetServiceTypes(self):
@@ -513,61 +580,6 @@ class OSClient:
     def DeleteWorkspace(self, workspace_id):
         full_url = self.rest_prefix + OSClient.URI_WORKSPACES + "/" + workspace_id
         r = requests.delete(full_url, headers=OSClient.HEADERS)
-        return r.json()
-
-    # Deployments APIs
-
-    @stringnotempty(['query'])
-    def GetDeployments(self, query, view="full"):
-        full_url = self.rest_prefix + OSClient.URI_DEPLOYMENTS
-        params = {"query": query, "view": view}
-        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
-        return r.json()
-
-    def CreateDeployment(self, info):
-        try:
-            json.loads(info)
-        except ValueError:
-            raise Exception("info should be in JSON format.")
-        full_url = self.rest_prefix + OSClient.URI_DEPLOYMENTS
-        r = requests.post(full_url, headers=OSClient.HEADERS, json=info)
-        return r.json()
-
-    @stringnotempty(['deployment_id'])
-    def GetDeployment(self, deployment_id, view="full"):
-        full_url = self.rest_prefix + OSClient.URI_DEPLOYMENTS + "/" + deployment_id
-        params = {"view": view}
-        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
-        return r.json()
-
-    @stringnotempty(['deployment_id'])
-    def UpdateDeployment(self, deployment_id, info):
-        try:
-            json.loads(info)
-        except ValueError:
-            raise Exception("info should be in JSON format.")
-        full_url = self.rest_prefix + OSClient.URI_DEPLOYMENTS + "/" + deployment_id
-        r = requests.put(full_url, headers=OSClient.HEADERS, json=info)
-        return r.json()
-
-    @stringnotempty(['deployment_id'])
-    def DeleteDeployment(self, deployment_id):
-        full_url = self.rest_prefix + OSClient.URI_DEPLOYMENTS + "/" + deployment_id
-        r = requests.delete(full_url, headers=OSClient.HEADERS)
-        return r.json()
-
-    # action_type: e.g. "restart"
-    @stringnotempty(['deployment_id', 'action_type'])
-    def ActionOnDeployment(self, deployment_id, action_type, force=True):
-        full_url = self.rest_prefix + OSClient.URI_DEPLOYMENTS + "/" + deployment_id + "/actions"
-        data = {"force": force, "type": action_type}
-        r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
-        return r.json()
-
-    @stringnotempty(['deployment_id'])
-    def GetDeploymentConsole(self, deployment_id):
-        full_url = self.rest_prefix + OSClient.URI_DEPLOYMENTS + "/" + deployment_id + "/console"
-        r = requests.get(full_url, headers=OSClient.HEADERS)
         return r.json()
 
     # Memberships APIs
