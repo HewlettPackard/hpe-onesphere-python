@@ -333,15 +333,17 @@ class OSClient:
         r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
         return r.json()
 
-    def CreateMembership(self, user_uri, role_uri, workspace_uri):
+    @stringnotempty(['user_uri, role_uri, project_uri'])
+    def CreateMembership(self, user_uri, role_uri, project_uri):
         full_url = self.rest_prefix + OSClient.URI_MEMBERSHIPS
-        data = {"userUri": user_uri, "roleUri": role_uri, "workspaceUri": workspace_uri}
+        data = {"userUri": user_uri, "membershipRoleUri": role_uri, "projectUri": project_uri}
         r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
         return r.json()
 
+    @stringnotempty(['user_uri, role_uri, project_uri'])
     def DeleteMembership(self, user_uri, role_uri, workspace_uri):
         full_url = self.rest_prefix + OSClient.URI_MEMBERSHIPS
-        data = {"userUri": user_uri, "roleUri": role_uri, "workspaceUri": workspace_uri}
+        data = {"userUri": user_uri, "membershipRoleUri": role_uri, "projectUri": project_uri}
         r = requests.delete(full_url, headers=OSClient.HEADERS, json=data)
         return r.json()
 
