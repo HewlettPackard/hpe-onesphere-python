@@ -64,6 +64,7 @@ class OSClient:
     URI_DEPLOYMENTS                 = "/deployments"
     URI_EVENTS                      = "/events"
     URI_KEYPAIRS                    = "/keypairs"
+    URI_MEMBERSHIP_ROLES            = "/membership-roles"
     URI_MEMBERSHIPS                 = "/memberships"
     URI_METRICS                     = "/metrics"
     URI_NETWORKS                    = "/networks"
@@ -296,6 +297,52 @@ class OSClient:
     def GetDeploymentConsole(self, deployment_id):
         full_url = self.rest_prefix + OSClient.URI_DEPLOYMENTS + "/" + deployment_id + "/console"
         r = requests.get(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    # Events APIs
+
+    @notimplementedyet
+    def GetEvents(self, resource_uri):
+        full_url = self.rest_prefix + OSClient.URI_EVENTS
+        params = {"resourceUri": resource_uri}
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
+        return r.json()
+
+    # Keypairs APIs
+
+    @stringnotempty(['region_uri', 'project_uri'])
+    def GetKeyPair(self, region_uri, project_uri):
+        full_url = self.rest_prefix + OSClient.URI_KEYPAIRS
+        params = {"regionUri": region_uri, "projectUri": project_uri}
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
+        return r.json()
+
+    # Membership Roles APIs
+
+    def GetMembershipRoles(self):
+        full_url = self.rest_prefix + OSClient.URI_MEMBERSHIP_ROLES
+        r = requests.get(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    # Memberships APIs
+
+    @stringnotempty(['query'])
+    def GetMemberships(self, query):
+        full_url = self.rest_prefix + OSClient.URI_MEMBERSHIPS
+        params = {"query": query}
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
+        return r.json()
+
+    def CreateMembership(self, user_uri, role_uri, workspace_uri):
+        full_url = self.rest_prefix + OSClient.URI_MEMBERSHIPS
+        data = {"userUri": user_uri, "roleUri": role_uri, "workspaceUri": workspace_uri}
+        r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
+        return r.json()
+
+    def DeleteMembership(self, user_uri, role_uri, workspace_uri):
+        full_url = self.rest_prefix + OSClient.URI_MEMBERSHIPS
+        data = {"userUri": user_uri, "roleUri": role_uri, "workspaceUri": workspace_uri}
+        r = requests.delete(full_url, headers=OSClient.HEADERS, json=data)
         return r.json()
 
     # Status APIs
@@ -582,27 +629,6 @@ class OSClient:
         r = requests.delete(full_url, headers=OSClient.HEADERS)
         return r.json()
 
-    # Memberships APIs
-
-    @stringnotempty(['query'])
-    def GetMemberships(self, query):
-        full_url = self.rest_prefix + OSClient.URI_MEMBERSHIPS
-        params = {"query": query}
-        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
-        return r.json()
-
-    def CreateMembership(self, user_uri, role_uri, workspace_uri):
-        full_url = self.rest_prefix + OSClient.URI_MEMBERSHIPS
-        data = {"userUri": user_uri, "roleUri": role_uri, "workspaceUri": workspace_uri}
-        r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
-        return r.json()
-
-    def DeleteMembership(self, user_uri, role_uri, workspace_uri):
-        full_url = self.rest_prefix + OSClient.URI_MEMBERSHIPS
-        data = {"userUri": user_uri, "roleUri": role_uri, "workspaceUri": workspace_uri}
-        r = requests.delete(full_url, headers=OSClient.HEADERS, json=data)
-        return r.json()
-
     # Roles APIs
 
     def GetRoles(self):
@@ -657,15 +683,6 @@ class OSClient:
                 "view": view,
                 "start": start,
                 "count": count}
-        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
-        return r.json()
-
-    # Events APIs
-
-    @notimplementedyet
-    def GetEvents(self, resource_uri):
-        full_url = self.rest_prefix + OSClient.URI_EVENTS
-        params = {"resourceUri": resource_uri}
         r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
         return r.json()
 
@@ -737,14 +754,5 @@ class OSClient:
     def DeleteTag(self, tag_id):
         full_url = self.rest_prefix + OSClient.URI_TAGS + "/" + tag_id
         r = requests.delete(full_url, headers=OSClient.HEADERS)
-        return r.json()
-
-    # Keypairs APIs
-
-    @stringnotempty(['region_uri', 'workspace_uri'])
-    def GetKeyPair(self, region_uri, workspace_uri):
-        full_url = self.rest_prefix + OSClient.URI_KEYPAIRS
-        params = {"regionUri": region_uri, "workspaceUri": workspace_uri}
-        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
         return r.json()
 
