@@ -347,6 +347,25 @@ class OSClient:
         r = requests.delete(full_url, headers=OSClient.HEADERS, json=data)
         return r.json()
 
+    # Metrics APIs
+
+    def GetMetrics(self, resource_uri_array, category_array, group_by, query_array, name_array, 
+                   period_start, period, period_count, view, start, count):
+        full_url = self.rest_prefix + OSClient.URI_METRICS
+        params = {"resourceUri": resource_uri_array, 
+                "category": category_array,
+                "groupBy": group_by,
+                "query": query_array,
+                "name": name_array,
+                "periodStart": period_start,
+                "period": period,
+                "periodCount": period_count,
+                "view": view,
+                "start": start,
+                "count": count}
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
+        return r.json()
+
     # Status APIs
 
     def GetStatus(self):
@@ -668,24 +687,6 @@ class OSClient:
     def DeleteUser(self, user_id):
         full_url = self.rest_prefix + OSClient.URI_USERS + "/" + user_id
         r = requests.delete(full_url, headers=OSClient.HEADERS)
-        return r.json()
-
-    # Metrics APIs
-
-    def GetMetrics(self, resource_uri_array, category_array, query_array, name_array, 
-                   period_start, period, period_count, view, start, count):
-        full_url = self.rest_prefix + OSClient.URI_METRICS
-        params = {"resourceUri": resource_uri_array, 
-                "category": category_array,
-                "query": query_array,
-                "name": name_array,
-                "periodStart": period_start,
-                "period": period,
-                "periodCount": period_count,
-                "view": view,
-                "start": start,
-                "count": count}
-        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
         return r.json()
 
     # Volumes APIs
