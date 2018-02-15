@@ -366,6 +366,33 @@ class OSClient:
         r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
         return r.json()
 
+    # Networks APIs
+
+    def GetNetworks(self, query):
+        full_url = self.rest_prefix + OSClient.URI_NETWORKS
+        params = {"query": query}
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
+        return r.json()
+
+    @stringnotempty(['network_id'])
+    def GetNetwork(self, network_id):
+        full_url = self.rest_prefix + OSClient.URI_NETWORKS + "/" + network_id
+        r = requests.get(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    # info_array: [{op, path, value}]
+    @stringnotempty(['network_id'])
+    def UpdateNetwork(self, network_id, info_array):
+        if (len(info_array) == 0):
+            raise Exception("info_array should be a non-empty array.")
+        try:
+            json.loads(info_array)
+        except ValueError:
+            raise Exception("info_array should be in JSON format.")
+        full_url = self.rest_prefix + OSClient.URI_NETWORKS + "/" + network_id
+        r = requests.put(full_url, headers=OSClient.HEADERS, json=info_array)
+        return r.json()
+
     # Status APIs
 
     def GetStatus(self):
@@ -597,20 +624,6 @@ class OSClient:
     @stringnotempty(['vm_profile_id'])
     def GetVirtualMachineProfile(self, vm_profile_id):
         full_url = self.rest_prefix + OSClient.URI_VIRTUAL_MACHINE_PROFILES + "/" + vm_profile_id
-        r = requests.get(full_url, headers=OSClient.HEADERS)
-        return r.json()
-
-    # Networks APIs
-
-    def GetNetworks(self, query, zone_uri):
-        full_url = self.rest_prefix + OSClient.URI_NETWORKS
-        params = {"q": query, "zoneUri": zone_uri}
-        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
-        return r.json()
-
-    @stringnotempty(['network_id'])
-    def GetNetwork(self, network_id):
-        full_url = self.rest_prefix + OSClient.URI_NETWORKS + "/" + network_id
         r = requests.get(full_url, headers=OSClient.HEADERS)
         return r.json()
 
