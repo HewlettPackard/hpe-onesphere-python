@@ -349,14 +349,14 @@ class OSClient:
 
     # Metrics APIs
 
-    def GetMetrics(self, resource_uri_array, category_array, group_by, query_array, name_array, 
+    def GetMetrics(self, resource_uri, category, group_by, query, name, 
                    period_start, period, period_count, view, start, count):
         full_url = self.rest_prefix + OSClient.URI_METRICS
-        params = {"resourceUri": resource_uri_array, 
-                "category": category_array,
+        params = {"resourceUri": resource_uri, 
+                "category": category,
                 "groupBy": group_by,
-                "query": query_array,
-                "name": name_array,
+                "query": query,
+                "name": name,
                 "periodStart": period_start,
                 "period": period,
                 "periodCount": period_count,
