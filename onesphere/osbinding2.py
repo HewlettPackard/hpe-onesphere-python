@@ -68,6 +68,7 @@ class OSClient:
     URI_MEMBERSHIPS                 = "/memberships"
     URI_METRICS                     = "/metrics"
     URI_NETWORKS                    = "/networks"
+    URI_PASSWORD_RESET              = "/password-reset"
     URI_PROVIDER_TYPES              = "/provider-types"
     URI_PROVIDERS                   = "/providers"
     URI_REGIONS                     = "/regions"
@@ -391,6 +392,22 @@ class OSClient:
             raise Exception("info_array should be in JSON format.")
         full_url = self.rest_prefix + OSClient.URI_NETWORKS + "/" + network_id
         r = requests.put(full_url, headers=OSClient.HEADERS, json=info_array)
+        return r.json()
+
+    # Password Reset APIs
+
+    @stringnotempty(['email'])
+    def ResetSingleUsePassword(email):
+        full_url = self.rest_prefix + OSClient.URI_PASSWORD_RESET
+        data = {"email": email}
+        r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
+        return r.json()
+
+    @stringnotempty(['password', 'token'])
+    def ChangePassword(password, token):
+        full_url = self.rest_prefix + OSClient.URI_PASSWORD_RESET + "/change"
+        data = {"password": password, "token": token}
+        r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
         return r.json()
 
     # Status APIs
