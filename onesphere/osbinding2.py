@@ -69,6 +69,7 @@ class OSClient:
     URI_METRICS                     = "/metrics"
     URI_NETWORKS                    = "/networks"
     URI_PASSWORD_RESET              = "/password-reset"
+    URI_PROJECTS                    = "/projects"
     URI_PROVIDER_TYPES              = "/provider-types"
     URI_PROVIDERS                   = "/providers"
     URI_REGIONS                     = "/regions"
@@ -182,11 +183,11 @@ class OSClient:
     # Catalogs APIs
 
     # view: "full" - return related content
-    def GetCatalogs(self, query="", view=""):
+    def GetCatalogs(self, user_query="", view=""):
         full_url = self.rest_prefix + OSClient.URI_CATALOGS
         params = {}
-        if query.strip():
-            params["userQuery"] = query.strip()
+        if user_query.strip():
+            params["userQuery"] = user_query.strip()
         if view.strip():
             params["view"] = view.strip()
         r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
@@ -207,9 +208,10 @@ class OSClient:
         return r.json()
 
     @stringnotempty(['catalog_id'])
-    def GetCatalog(self, catalog_id):
+    def GetCatalog(self, catalog_id, view):
         full_url = self.rest_prefix + OSClient.URI_CATALOGS + "/" + catalog_id
-        r = requests.get(full_url, headers=OSClient.HEADERS)
+        params = {"view": view}
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
         return r.json()
 
     @notimplementedyet
@@ -408,6 +410,51 @@ class OSClient:
         full_url = self.rest_prefix + OSClient.URI_PASSWORD_RESET + "/change"
         data = {"password": password, "token": token}
         r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
+        return r.json()
+
+    # Projects APIs
+
+    # view: "full" - return related content
+    def GetProjects(self, user_query="", view=""):
+        full_url = self.rest_prefix + OSClient.URI_PROJECTS
+        params = {}
+        if user_query.strip():
+            params["userQuery"] = user_query.strip()
+        if view.strip():
+            params["view"] = view.strip()
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
+        return r.json()
+
+    @stringnotempty(['name', 'description', 'tag_uris'])
+    def CreateProject(self, name, description, tag_uris):
+        full_url = self.rest_prefix + OSClient.URI_PROJECTS
+        data = {"name": name,
+                "description": description,
+                "tagUris": tag_uris}
+        r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
+        return r.json()
+
+    @stringnotempty(['project_id'])
+    def GetProject(self, project_id, view):
+        full_url = self.rest_prefix + OSClient.URI_PROJECTS + "/" + project_id
+        params = {"view", view}
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
+        return r.json()
+
+    @notimplementedyet
+    @stringnotempty(['project_id'])
+    def DeleteProject(self, project_id):
+        full_url = self.rest_prefix + OSClient.URI_PROJECTS + "/" + project_id
+        r = requests.delete(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    @stringnotempty(['project_id', 'name', 'description', 'tag_uris'])
+    def UpdateProject(self, project_id, name, description, tag_uris):
+        full_url = self.rest_prefix + OSClient.URI_PROJECTS + "/" + project_id
+        data = {"name": name,
+                "description": description,
+                "tagUris": tag_uris}
+        r = requests.put(full_url, headers=OSClient.HEADERS, json=data)
         return r.json()
 
     # Status APIs
