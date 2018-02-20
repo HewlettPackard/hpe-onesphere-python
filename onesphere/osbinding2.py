@@ -526,11 +526,11 @@ class OSClient:
 
     # Rates APIs
 
-    # resource_uri_array: "default" - skeleton set of the default rates
+    # resource_uri: "default" - skeleton set of the default rates
     # active: boolean
     # start: integer
     # count: integer
-    def GetRates(self, resource_uri_array="", 
+    def GetRates(self, resource_uri="", 
                  effective_for_date="", effective_date="", 
                  metric_name="", active=True,
                  start=0, count=0):
@@ -539,8 +539,8 @@ class OSClient:
                   "effectiveDate": effective_date,
                   "metricName": metric_name,
                   "active": active}
-        if len(resource_uri_array) > 0:
-            params["resourceUri"] = resource_uri_array
+        if resource_uri.strip():
+            params["resourceUri"] = resource_uri.strip()
         if start > 0:
             params["start"] = start
         if count > 0:
