@@ -160,7 +160,8 @@ class OSClient:
         r = requests.delete(full_url, headers=OSClient.HEADERS)
         return r.json()
 
-    # info_array: [{os, path, value}]
+    # info_array: [{op, path, value}]
+    # op: "replace|remove"
     @stringnotempty(['appliance_id'])
     def UpdateAppliance(self, appliance_id, info_array):
         if (len(info_array) == 0):
