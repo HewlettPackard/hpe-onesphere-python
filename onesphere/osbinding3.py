@@ -155,7 +155,7 @@ class OSClient:
         return r.json()
 
     @stringnotempty(['appliance_id'])
-    def DeleteAppliance(self, provider_id):
+    def DeleteAppliance(self, appliance_id):
         full_url = self.rest_prefix + OSClient.URI_APPLIANCES + "/" + appliance_id
         r = requests.delete(full_url, headers=OSClient.HEADERS)
         return r.json()
@@ -457,35 +457,14 @@ class OSClient:
         r = requests.put(full_url, headers=OSClient.HEADERS, json=data)
         return r.json()
 
-    # Status APIs
-
-    def GetStatus(self):
-        full_url = self.rest_prefix + OSClient.URI_STATUS
-        r = requests.get(full_url, headers=OSClient.HEADERS)
-        return r.json()
-
-    # Session APIs
-
-    def GetSession(self, view="full"):
-        full_url = self.rest_prefix + OSClient.URI_SESSION
-        params = {"view": view}
-        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
-        return r.json()
-
-    @notimplementedyet
-    @stringnotempty(['user_name'])
-    def GetSessionIdp(self, user_name):
-        full_url = self.rest_prefix + OSClient.URI_SESSION_IDP
-        params = {"userName": user_name}
-        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
-        return r.json()
-
-    # Providers APIs
+    # Provider Types APIs
 
     def GetProviderTypes(self):
         full_url = self.rest_prefix + OSClient.URI_PROVIDER_TYPES
         r = requests.get(full_url, headers=OSClient.HEADERS)
         return r.json()
+
+    # Providers APIs
 
     def GetProviders(self, parent_uri, provider_type_uri):
         full_url = self.rest_prefix + OSClient.URI_PROVIDERS
@@ -533,6 +512,30 @@ class OSClient:
             raise Exception("info_array should be in JSON format.")
         full_url = self.rest_prefix + OSClient.URI_PROVIDERS + "/" + provider_id
         r = requests.put(full_url, headers=OSClient.HEADERS, json=info_array)
+        return r.json()
+
+
+    # Status APIs
+
+    def GetStatus(self):
+        full_url = self.rest_prefix + OSClient.URI_STATUS
+        r = requests.get(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    # Session APIs
+
+    def GetSession(self, view="full"):
+        full_url = self.rest_prefix + OSClient.URI_SESSION
+        params = {"view": view}
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
+        return r.json()
+
+    @notimplementedyet
+    @stringnotempty(['user_name'])
+    def GetSessionIdp(self, user_name):
+        full_url = self.rest_prefix + OSClient.URI_SESSION_IDP
+        params = {"userName": user_name}
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
         return r.json()
 
     # Regions APIs
