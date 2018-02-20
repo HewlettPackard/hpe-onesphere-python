@@ -72,6 +72,7 @@ class OSClient:
     URI_PROJECTS                    = "/projects"
     URI_PROVIDER_TYPES              = "/provider-types"
     URI_PROVIDERS                   = "/providers"
+    URI_RATES                       = "/rates"
     URI_REGIONS                     = "/regions"
     URI_ROLES                       = "/roles"
     URI_SERVICE_TYPES               = "/service-types"
@@ -523,6 +524,35 @@ class OSClient:
         r = requests.put(full_url, headers=OSClient.HEADERS, json=info_array)
         return r.json()
 
+    # Rates APIs
+
+    # resource_uri_array: "default" - skeleton set of the default rates
+    # active: boolean
+    # start: integer
+    # count: integer
+    def GetRates(self, resource_uri_array="", 
+                 effective_for_date="", effective_date="", 
+                 metric_name="", active=True,
+                 start=0, count=0):
+        full_url = self.rest_prefix + OSClient.URI_RATES
+        params = {"effectiveForDate": effective_for_date,
+                  "effectiveDate": effective_date,
+                  "metricName": metric_name,
+                  "active": active}
+        if len(resource_uri_array) > 0:
+            params["resourceUri"] = resource_uri_array
+        if start > 0:
+            params["start"] = start
+        if count > 0:
+            params["count"] = count
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
+        return r.json()
+
+    @stringnotempty(['rate_id'])
+    def GetRate(self, rate_id):
+        full_url = self.rest_prefix + OSClient.URI_RATES + "/" + rate_id
+        r = requests.get(full_url, headers=OSClient.HEADERS)
+        return r.json()
 
     # Status APIs
 
