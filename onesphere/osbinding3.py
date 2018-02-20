@@ -466,16 +466,23 @@ class OSClient:
 
     # Providers APIs
 
-    def GetProviders(self, parent_uri, provider_type_uri):
+    # query supports providerTypeUri and projectUri
+    def GetProviders(self, query=""):
         full_url = self.rest_prefix + OSClient.URI_PROVIDERS
-        params = {"parentUri": parent_uri, "providerTypeUri": provider_type_uri}
+        params = {"query": query}
         r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
         return r.json()
 
-    @stringnotempty(['provider_id'])
-    def CreateProvider(self, provider_id, provider_type_uri, access_key, 
-                       secret_key, s3_cost_bucket, parent_uri, 
-                       payment_provider=True, state="Enabled"):
+    # payment_provider: True|False
+    # state: "Enabled|Disabled"
+    @stringnotempty(['provider_id', 'provider_type_uri', 
+                     'access_key', 'secret_key',
+                     'payment_provider', 's3_cost_bucket',
+                     'master_uri', 'state'])
+    def CreateProvider(self, provider_id, provider_type_uri, 
+                       access_key, secret_key,
+                       payment_provider, s3_cost_bucket,
+                       master_uri, state):
         full_url = self.rest_prefix + OSClient.URI_PROVIDERS
         data={"id": provider_id, 
               "providerTypeUri": provider_type_uri, 
@@ -483,7 +490,7 @@ class OSClient:
               "secretKey": secret_key, 
               "paymentProvider": payment_provider, 
               "s3CostBucket": s3_cost_bucket, 
-              "parentUri": parent_uri, 
+              "masterUri": master_uri, 
               "state": state}
         r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
         return r.json()
@@ -501,7 +508,8 @@ class OSClient:
         r = requests.delete(full_url, headers=OSClient.HEADERS)
         return r.json()
 
-    # info_array: [{os, path, value}]
+    # info_array: [{op, path, value}]
+    # op: "add|replace|remove"
     @stringnotempty(['provider_id'])
     def UpdateProvider(self, provider_id, info_array):
         if (len(info_array) == 0):
