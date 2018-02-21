@@ -554,29 +554,6 @@ class OSClient:
         r = requests.get(full_url, headers=OSClient.HEADERS)
         return r.json()
 
-    # Status APIs
-
-    def GetStatus(self):
-        full_url = self.rest_prefix + OSClient.URI_STATUS
-        r = requests.get(full_url, headers=OSClient.HEADERS)
-        return r.json()
-
-    # Session APIs
-
-    def GetSession(self, view="full"):
-        full_url = self.rest_prefix + OSClient.URI_SESSION
-        params = {"view": view}
-        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
-        return r.json()
-
-    @notimplementedyet
-    @stringnotempty(['user_name'])
-    def GetSessionIdp(self, user_name):
-        full_url = self.rest_prefix + OSClient.URI_SESSION_IDP
-        params = {"userName": user_name}
-        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
-        return r.json()
-
     # Regions APIs
 
     def GetRegions(self, provider_uri, view):
@@ -613,6 +590,191 @@ class OSClient:
             raise Exception("info should be in JSON format.")
         full_url = self.rest_prefix + OSClient.URI_REGIONS + "/" + region_id
         r = requests.put(full_url, headers=OSClient.HEADERS, json=info)
+        return r.json()
+
+    # Roles APIs
+
+    def GetRoles(self):
+        full_url = self.rest_prefix + OSClient.URI_ROLES
+        r = requests.get(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    # Service Types APIs
+
+    def GetServiceTypes(self):
+        full_url = self.rest_prefix + OSClient.URI_SERVICE_TYPES
+        r = requests.get(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    @stringnotempty(['service_type_id'])
+    def GetServiceType(self, service_type_id):
+        full_url = self.rest_prefix + OSClient.URI_SERVICE_TYPES + "/" + service_type_id
+        r = requests.get(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    # Services APIs
+
+    def GetServices(self, query, user_query, 
+                    service_type_uri, zone_uri, workspace_uri, catalog_uri, 
+                    view="full"):
+        full_url = self.rest_prefix + OSClient.URI_SERVICES
+        params = {"query": query,
+                  "userQuery": user_query,
+                  "serviceTypeUri": service_type_uri,
+                  "zoneUri": zone_uri,
+                  "workspaceUri": workspace_uri,
+                  "catalogUri": catalog_uri,
+                  "view": view}
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
+        return r.json()
+
+    # view: "full", "deployment"
+    @stringnotempty(['service_id'])
+    def GetService(self, service_id, view="full"):
+        full_url = self.rest_prefix + OSClient.URI_SERVICES + "/" + service_id
+        params = {"view": view}
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
+        return r.json()
+
+    # Session APIs
+
+    def GetSession(self, view="full"):
+        full_url = self.rest_prefix + OSClient.URI_SESSION
+        params = {"view": view}
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
+        return r.json()
+
+    @notimplementedyet
+    @stringnotempty(['user_name'])
+    def GetSessionIdp(self, user_name):
+        full_url = self.rest_prefix + OSClient.URI_SESSION_IDP
+        params = {"userName": user_name}
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
+        return r.json()
+
+    # Status APIs
+
+    def GetStatus(self):
+        full_url = self.rest_prefix + OSClient.URI_STATUS
+        r = requests.get(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    # Tag Keys APIs
+
+    def GetTagKeys(self, view="full"):
+        full_url = self.rest_prefix + OSClient.URI_TAG_KEYS
+        params = {"view": view}
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
+        return r.json()
+
+    @stringnotempty(['name'])
+    def CreateTagKey(self, name):
+        full_url = self.rest_prefix + OSClient.URI_TAG_KEYS
+        data = {"name": name}
+        r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
+        return r.json()
+
+    @stringnotempty(['tag_key_id'])
+    def GetTagKey(self, tag_key_id, view="full"):
+        full_url = self.rest_prefix + OSClient.URI_TAG_KEYS + "/" + tag_key_id
+        params = {"view": view}
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
+        return r.json()
+
+    @stringnotempty(['tag_key_id'])
+    def DeleteTagKey(self, tag_key_id):
+        full_url = self.rest_prefix + OSClient.URI_TAG_KEYS + "/" + tag_key_id
+        r = requests.delete(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    # Tags APIs
+
+    def GetTags(self, view="full"):
+        full_url = self.rest_prefix + OSClient.URI_TAGS
+        params = {"view": view}
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
+        return r.json()
+
+    @stringnotempty(['name', 'tag_key_uri'])
+    def CreateTag(self, name, tag_key_uri):
+        full_url = self.rest_prefix + OSClient.URI_TAGS
+        data = {"name": name, "tagKeyUri": tag_key_uri}
+        r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
+        return r.json()
+
+    @stringnotempty(['tag_id'])
+    def GetTag(self, tag_id, view="full"):
+        full_url = self.rest_prefix + OSClient.URI_TAGS + "/" + tag_id
+        params = {"view": view}
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
+        return r.json()
+
+    @stringnotempty(['tag_id'])
+    def DeleteTag(self, tag_id):
+        full_url = self.rest_prefix + OSClient.URI_TAGS + "/" + tag_id
+        r = requests.delete(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    # Users APIs
+
+    def GetUsers(self):
+        full_url = self.rest_prefix + OSClient.URI_USERS
+        r = requests.get(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    def CreateUser(self, name, password, email, role):
+        full_url = self.rest_prefix + OSClient.URI_USERS
+        data = {"name": name, "email": email, "password": password, "role": role}
+        r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
+        return r.json()
+
+    @stringnotempty(['user_id'])
+    def GetUser(self, user_id):
+        full_url = self.rest_prefix + OSClient.URI_USERS + "/" + user_id
+        r = requests.get(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    @stringnotempty(['user_id'])
+    def UpdateUser(self, user_id, name, password, email, role):
+        full_url = self.rest_prefix + OSClient.URI_USERS + "/" + user_id
+        data = {"name": name, "email": email, "password": password, "role": role}
+        r = requests.put(full_url, headers=OSClient.HEADERS, json=data)
+        return r.json()
+
+    @stringnotempty(['user_id'])
+    def DeleteUser(self, user_id):
+        full_url = self.rest_prefix + OSClient.URI_USERS + "/" + user_id
+        r = requests.delete(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    # Virtual Machine Profiles APIs
+
+    def GetVirtualMachineProfiles(self, query, zone_uri, service_uri):
+        full_url = self.rest_prefix + OSClient.URI_VIRTUAL_MACHINE_PROFILES
+        params = {"q": query, 
+                  "zoneUri": zone_uri,
+                  "serviceUri": service_uri}
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
+        return r.json()
+
+    @stringnotempty(['vm_profile_id'])
+    def GetVirtualMachineProfile(self, vm_profile_id):
+        full_url = self.rest_prefix + OSClient.URI_VIRTUAL_MACHINE_PROFILES + "/" + vm_profile_id
+        r = requests.get(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    # Volumes APIs
+
+    def GetVolumes(self, query):
+        full_url = self.rest_prefix + OSClient.URI_VOLUMES
+        params = {"query": query}
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
+        return r.json()
+
+    @stringnotempty(['volume_id'])
+    def GetVolume(self, volume_id):
+        full_url = self.rest_prefix + OSClient.URI_VOLUMES + "/" + volume_id
+        r = requests.get(full_url, headers=OSClient.HEADERS)
         return r.json()
 
     # Zone Types APIs
@@ -678,203 +840,5 @@ class OSClient:
     def GetZoneApplianceImage(self, zone_id):
         full_url = self.rest_prefix + OSClient.URI_ZONES + "/" + zone_id + "/appliance-image"
         r = requests.get(full_url, headers=OSClient.HEADERS)
-        return r.json()
-
-    # Service Types APIs
-
-    def GetServiceTypes(self):
-        full_url = self.rest_prefix + OSClient.URI_SERVICE_TYPES
-        r = requests.get(full_url, headers=OSClient.HEADERS)
-        return r.json()
-
-    @stringnotempty(['service_type_id'])
-    def GetServiceType(self, service_type_id):
-        full_url = self.rest_prefix + OSClient.URI_SERVICE_TYPES + "/" + service_type_id
-        r = requests.get(full_url, headers=OSClient.HEADERS)
-        return r.json()
-
-    # Services APIs
-
-    def GetServices(self, query, user_query, 
-                    service_type_uri, zone_uri, workspace_uri, catalog_uri, 
-                    view="full"):
-        full_url = self.rest_prefix + OSClient.URI_SERVICES
-        params = {"query": query,
-                  "userQuery": user_query,
-                  "serviceTypeUri": service_type_uri,
-                  "zoneUri": zone_uri,
-                  "workspaceUri": workspace_uri,
-                  "catalogUri": catalog_uri,
-                  "view": view}
-        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
-        return r.json()
-
-    # view: "full", "deployment"
-    @stringnotempty(['service_id'])
-    def GetService(self, service_id, view="full"):
-        full_url = self.rest_prefix + OSClient.URI_SERVICES + "/" + service_id
-        params = {"view": view}
-        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
-        return r.json()
-
-    # Virtual Machine Profiles APIs
-
-    def GetVirtualMachineProfiles(self, query, zone_uri, service_uri):
-        full_url = self.rest_prefix + OSClient.URI_VIRTUAL_MACHINE_PROFILES
-        params = {"q": query, 
-                  "zoneUri": zone_uri,
-                  "serviceUri": service_uri}
-        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
-        return r.json()
-
-    @stringnotempty(['vm_profile_id'])
-    def GetVirtualMachineProfile(self, vm_profile_id):
-        full_url = self.rest_prefix + OSClient.URI_VIRTUAL_MACHINE_PROFILES + "/" + vm_profile_id
-        r = requests.get(full_url, headers=OSClient.HEADERS)
-        return r.json()
-
-    # Worksapces APIs
-
-    @stringnotempty(['query'])
-    def GetWorkspaces(self, query, view="full"):
-        full_url = self.rest_prefix + OSClient.URI_WORKSPACES
-        params = {"q": query, "view": view}
-        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
-        return r.json()
-
-    @stringnotempty(['name'])
-    def CreateWorkspace(self, name, description, tag_uris_array):
-        full_url = self.rest_prefix + OSClient.URI_WORKSPACES
-        data = {"name": name, "description": description, "tagUris": tag_uris_array}
-        r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
-        return r.json()
-
-    @stringnotempty(['workspace_id'])
-    def GetWorkspace(self, workspace_id, view="full"):
-        full_url = self.rest_prefix + OSClient.URI_WORKSPACES + "/" + workspace_id
-        params = {"view": view}
-        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
-        return r.json()
-
-    @stringnotempty(['workspace_id'])
-    def UpdateWorkspace(self, workspace_id, name, description, tag_uris_array):
-        full_url = self.rest_prefix + OSClient.URI_WORKSPACES + "/" + workspace_id
-        data = {"name": name, "description": description, "tagUris": tag_uris_array}
-        r = requests.put(full_url, headers=OSClient.HEADERS, json=data)
-        return r.json()
-
-    @stringnotempty(['workspace_id'])
-    def DeleteWorkspace(self, workspace_id):
-        full_url = self.rest_prefix + OSClient.URI_WORKSPACES + "/" + workspace_id
-        r = requests.delete(full_url, headers=OSClient.HEADERS)
-        return r.json()
-
-    # Roles APIs
-
-    def GetRoles(self):
-        full_url = self.rest_prefix + OSClient.URI_ROLES
-        r = requests.get(full_url, headers=OSClient.HEADERS)
-        return r.json()
-
-    # Users APIs
-
-    def GetUsers(self):
-        full_url = self.rest_prefix + OSClient.URI_USERS
-        r = requests.get(full_url, headers=OSClient.HEADERS)
-        return r.json()
-
-    def CreateUser(self, name, password, email, role):
-        full_url = self.rest_prefix + OSClient.URI_USERS
-        data = {"name": name, "email": email, "password": password, "role": role}
-        r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
-        return r.json()
-
-    @stringnotempty(['user_id'])
-    def GetUser(self, user_id):
-        full_url = self.rest_prefix + OSClient.URI_USERS + "/" + user_id
-        r = requests.get(full_url, headers=OSClient.HEADERS)
-        return r.json()
-
-    @stringnotempty(['user_id'])
-    def UpdateUser(self, user_id, name, password, email, role):
-        full_url = self.rest_prefix + OSClient.URI_USERS + "/" + user_id
-        data = {"name": name, "email": email, "password": password, "role": role}
-        r = requests.put(full_url, headers=OSClient.HEADERS, json=data)
-        return r.json()
-
-    @stringnotempty(['user_id'])
-    def DeleteUser(self, user_id):
-        full_url = self.rest_prefix + OSClient.URI_USERS + "/" + user_id
-        r = requests.delete(full_url, headers=OSClient.HEADERS)
-        return r.json()
-
-    # Volumes APIs
-
-    def GetVolumes(self, query):
-        full_url = self.rest_prefix + OSClient.URI_VOLUMES
-        params = {"query": query}
-        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
-        return r.json()
-
-    @stringnotempty(['volume_id'])
-    def GetVolume(self, volume_id):
-        full_url = self.rest_prefix + OSClient.URI_VOLUMES + "/" + volume_id
-        r = requests.get(full_url, headers=OSClient.HEADERS)
-        return r.json()
-
-    # Tag Keys APIs
-
-    def GetTagKeys(self, view="full"):
-        full_url = self.rest_prefix + OSClient.URI_TAG_KEYS
-        params = {"view": view}
-        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
-        return r.json()
-
-    @stringnotempty(['name'])
-    def CreateTagKey(self, name):
-        full_url = self.rest_prefix + OSClient.URI_TAG_KEYS
-        data = {"name": name}
-        r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
-        return r.json()
-
-    @stringnotempty(['tag_key_id'])
-    def GetTagKey(self, tag_key_id, view="full"):
-        full_url = self.rest_prefix + OSClient.URI_TAG_KEYS + "/" + tag_key_id
-        params = {"view": view}
-        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
-        return r.json()
-
-    @stringnotempty(['tag_key_id'])
-    def DeleteTagKey(self, tag_key_id):
-        full_url = self.rest_prefix + OSClient.URI_TAG_KEYS + "/" + tag_key_id
-        r = requests.delete(full_url, headers=OSClient.HEADERS)
-        return r.json()
-
-    # Tags APIs
-
-    def GetTags(self, view="full"):
-        full_url = self.rest_prefix + OSClient.URI_TAGS
-        params = {"view": view}
-        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
-        return r.json()
-
-    @stringnotempty(['name', 'tag_key_uri'])
-    def CreateTag(self, name, tag_key_uri):
-        full_url = self.rest_prefix + OSClient.URI_TAGS
-        data = {"name": name, "tagKeyUri": tag_key_uri}
-        r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
-        return r.json()
-
-    @stringnotempty(['tag_id'])
-    def GetTag(self, tag_id, view="full"):
-        full_url = self.rest_prefix + OSClient.URI_TAGS + "/" + tag_id
-        params = {"view": view}
-        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
-        return r.json()
-
-    @stringnotempty(['tag_id'])
-    def DeleteTag(self, tag_id):
-        full_url = self.rest_prefix + OSClient.URI_TAGS + "/" + tag_id
-        r = requests.delete(full_url, headers=OSClient.HEADERS)
         return r.json()
 
