@@ -673,21 +673,14 @@ class OSClient:
 
     # Services APIs
 
-    def GetServices(self, query, user_query, 
-                    service_type_uri, zone_uri, workspace_uri, catalog_uri, 
-                    view="full"):
+    # view: full
+    def GetServices(self, query="", user_query="", view="full"):
         full_url = self.rest_prefix + OSClient.URI_SERVICES
-        params = {"query": query,
-                  "userQuery": user_query,
-                  "serviceTypeUri": service_type_uri,
-                  "zoneUri": zone_uri,
-                  "workspaceUri": workspace_uri,
-                  "catalogUri": catalog_uri,
-                  "view": view}
+        params = {"query": query, "userQuery": user_query, "view": view}
         r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
         return r.json()
 
-    # view: "full", "deployment"
+    # view: "full|deployment"
     @stringnotempty(['service_id'])
     def GetService(self, service_id, view="full"):
         full_url = self.rest_prefix + OSClient.URI_SERVICES + "/" + service_id
