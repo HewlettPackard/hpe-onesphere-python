@@ -556,13 +556,13 @@ class OSClient:
 
     # Regions APIs
 
-    def GetRegions(self, provider_uri, view):
+    def GetRegions(self, query="", view=""):
         full_url = self.rest_prefix + OSClient.URI_REGIONS
-        params={"providerUri": provider_uri, "view": view}
+        params={"query": query, "view": view}
         r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
         return r.json()
 
-    @stringnotempty(['name'])
+    @stringnotempty(['name', 'provider_uri', 'loc_latitude', 'loc_longitude'])
     def CreateRegion(self, name, provider_uri, loc_latitude, loc_longitude):
         full_url = self.rest_prefix + OSClient.URI_REGIONS
         data = {"name": name, 
@@ -580,16 +580,75 @@ class OSClient:
         r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
         return r.json()
 
-    # info is in json format
+    @stringnotempty(['region_id'])
+    def DeleteRegion(self, region_id, force=False):
+        full_url = self.rest_prefix + OSClient.URI_REGIONS + "/" + region_id
+        params = {"force": force}
+        r = requests.delete(full_url, headers=OSClient.HEADERS, params=params)
+        return r.json()
+
+    # info_array: [{op, path, value}]
+    # op: "add|replace"
+    # path: "/name|/location"
+    @stringnotempty(['region_id'])
+    def PatchRegion(self, region_id, info_array):
+        if (len(info_array) == 0):
+            raise Exception("info_array should be a non-empty array.")
+        try:
+            json.loads(info_array)
+        except ValueError:
+            raise Exception("info_array should be in JSON format.")
+        full_url = self.rest_prefix + OSClient.URI_REGIONS + "/" + region_id
+        r = requests.put(full_url, headers=OSClient.HEADERS, json=info_array)
+        return r.json()
+
     @notimplementedyet
     @stringnotempty(['region_id'])
-    def UpdateRegion(self, region_id, info):
+    def UpdateRegion(self, region_id, region):
         try:
-            json.loads(info)
+            json.loads(region)
         except ValueError:
-            raise Exception("info should be in JSON format.")
+            raise Exception("region should be in JSON format.")
         full_url = self.rest_prefix + OSClient.URI_REGIONS + "/" + region_id
-        r = requests.put(full_url, headers=OSClient.HEADERS, json=info)
+        r = requests.put(full_url, headers=OSClient.HEADERS, json=region)
+        return r.json()
+
+    @stringnotempty(['region_id'])
+    def GetRegionConnection(self, region_id):
+        full_url = self.rest_prefix + OSClient.URI_REGIONS + "/" + region_id + "/connection"
+        r = requests.get(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    # state: "Enabling|Enabled|Disabling|Disabled"
+    @stringnotempty(['region_id', 'endpoint_uuid', 'name', 
+                     'loc_ipaddress', 'loc_username', 'loc_password', 'loc_port', 
+                     'state', 'uri'])
+    def CreateRegionConnection(self, region_id, endpoint_uuid, name, 
+                               loc_ipaddress, loc_username, loc_password, loc_port, 
+                               state, uri):
+        full_url = self.rest_prefix + OSClient.URI_REGIONS + "/" + region_id + "/connection"
+        data = {"endpointUuid": endpoint_uuid,
+                "name": name, 
+                "location": {
+                    "ipAddress": loc_ipaddress, 
+                    "username": loc_username,
+                    "password": loc_password,
+                    "port": loc_port},
+                "state": state,
+                "uri": uri}
+        r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
+        return r.json()
+
+    @stringnotempty(['region_id'])
+    def DeleteRegionConnection(self, region_id):
+        full_url = self.rest_prefix + OSClient.URI_REGIONS + "/" + region_id + "/connection"
+        r = requests.delete(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    @stringnotempty(['region_id'])
+    def GetRegionConnectorImage(self, region_id):
+        full_url = self.rest_prefix + OSClient.URI_REGIONS + "/" + region_id + "/connector-image"
+        r = requests.get(full_url, headers=OSClient.HEADERS)
         return r.json()
 
     # Roles APIs
