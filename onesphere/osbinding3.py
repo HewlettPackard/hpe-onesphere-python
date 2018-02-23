@@ -101,7 +101,8 @@ class OSClient:
     def __del__(self):
         # raising exception in the destructor will be ignored
         # raise Exception("raising exception in OSClient destructor")
-        pass
+        #pass
+        self.Disconnect()
 
     def Connect(self):
         full_url = self.rest_prefix + OSClient.URI_SESSION
@@ -115,6 +116,10 @@ class OSClient:
             self.user_uri = r_json["userUri"]
             OSClient.HEADERS["Authorization"] = r_json["token"]
 
+    def Disconnect(self):
+        full_url = self.rest_prefix + OSClient.URI_SESSION
+        r = requests.delete(full_url, headers=OSClient.HEADERS)
+ 
     # Account APIs
 
     @notimplementedyet
