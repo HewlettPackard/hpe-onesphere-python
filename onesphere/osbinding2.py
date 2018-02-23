@@ -874,39 +874,35 @@ class OSClient:
 
     # Zones APIs
 
-    def GetZones(self, region_uri, query):
+    def GetZones(self, query="", region_uri="", appliance_uri=""):
         full_url = self.rest_prefix + OSClient.URI_ZONES
-        params = {"regionUri": region_uri, "q": query}
+        params = {"query": query, "regionUri": region_uri, "applianceUri": appliance_uri}
         r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
         return r.json()
 
-    @stringnotempty(['name'])
-    def CreateZone(self, name, provider_uri, region_uri, zone_type_uri):
+    def CreateZone(self, zone_data):
         full_url = self.rest_prefix + OSClient.URI_ZONES
-        data = {"name": name, 
-                "providerUri": provider_uri, 
-                "regionUri": provider_uri, 
-                "zoneTypeUri": zone_type_uri}
-        r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
+        try:
+            json.loads(zone_data)
+        except ValueError:
+            raise Exception("zone_data should be in JSON format.")
+        r = requests.post(full_url, headers=OSClient.HEADERS, json=zone_data)
         return r.json()
 
+    # view: "full"
     @stringnotempty(['zone_id'])
-    def GetZone(self, zone_id, view):
+    def GetZone(self, zone_id, view="full"):
         full_url = self.rest_prefix + OSClient.URI_ZONES + "/" + zone_id
         params = {"view": view}
         r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
         return r.json()
 
+    # op: "add|replace|remove"
     @stringnotempty(['zone_id'])
-    def UpdateZone(self, zone_id, info_array):
-        if (len(info_array) == 0):
-            raise Exception("info_array should be a non-empty array.")
-        try:
-            json.loads(info_array)
-        except ValueError:
-            raise Exception("info_array should be in JSON format.")
+    def UpdateZone(self, zone_id, op, path, value):
         full_url = self.rest_prefix + OSClient.URI_ZONES + "/" + zone_id
-        r = requests.put(full_url, headers=OSClient.HEADERS, json=info_array)
+        data = {"op": op, "path": path, "value": value}
+        r = requests.put(full_url, headers=OSClient.HEADERS, json=data)
         return r.json()
 
     @stringnotempty(['zone_id'])
@@ -916,11 +912,15 @@ class OSClient:
         r = requests.delete(full_url, headers=OSClient.HEADERS, params=params)
         return r.json()
 
-    # action: e.g. "reset"
-    @stringnotempty(['zone_id', 'action'])
-    def ActionOnZone(self, zone_id, action):
+    # action_type: "reset|add-capacity|reduce-capacity"
+    # resource_type: "compute|storage"
+    @stringnotempty(['zone_id'])
+    def ActionOnZone(self, zone_id, action_type, resource_type, resource_capacity):
         full_url = self.rest_prefix + OSClient.URI_ZONES + "/" + zone_id + "/actions"
-        data = {"type": action}
+        data = {"type": action_type,
+                "resourceOps": {
+                    "resourceType": resource_type,
+                    "resourceCapacity": resource_capacity}}
         r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
         return r.json()
 
@@ -928,5 +928,47 @@ class OSClient:
     def GetZoneApplianceImage(self, zone_id):
         full_url = self.rest_prefix + OSClient.URI_ZONES + "/" + zone_id + "/appliance-image"
         r = requests.get(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    @stringnotempty(['zone_id'])
+    def GetZoneTaskStatus(self, zone_id):
+        full_url = self.rest_prefix + OSClient.URI_ZONES + "/" + zone_id + "/task-status"
+        r = requests.get(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    @stringnotempty(['zone_id', 'uuid'])
+    def GetZoneConnections(self, zone_id, uuid):
+        full_url = self.rest_prefix + OSClient.URI_ZONES + "/" + zone_id + "/connections"
+        params = {"uuid": uuid}
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
+        return r.json()
+
+    # state: "Enabling|Enabled|Disabling|Disabled"
+    @stringnotempty(['zone_id'])
+    def CreateZoneConnection(self, zone_id, uuid, name, ip_address, username, password, port, state):
+        full_url = self.rest_prefix + OSClient.URI_ZONES + "/" + zone_id + "/connections"
+        data = {"uuid": uuid,
+                "name": name,
+                "location": {
+                    "ipAddress": ip_address,
+                    "username": username,
+                    "password": password,
+                    "port": port},
+                "state": state}
+        r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
+        return r.json()
+
+    @stringnotempty(['zone_id', 'uuid'])
+    def DeleteZoneConnection(self, zone_id, uuid):
+        full_url = self.rest_prefix + OSClient.URI_ZONES + "/" + zone_id + "/connections/" + uuid
+        r = requests.delete(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    # op: "add|replace|remove"
+    @stringnotempty(['zone_id'])
+    def UpdateZoneConnection(self, zone_id, uuid, op, path, value):
+        full_url = self.rest_prefix + OSClient.URI_ZONES + "/" + zone_id + "/connections/" + uuid
+        data = {"op": op, "path": path, "value": value}
+        r = requests.put(full_url, headers=OSClient.HEADERS, json=data)
         return r.json()
 
