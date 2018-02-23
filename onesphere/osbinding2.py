@@ -778,14 +778,16 @@ class OSClient:
 
     # Users APIs
 
-    def GetUsers(self):
+    def GetUsers(self, user_query=""):
         full_url = self.rest_prefix + OSClient.URI_USERS
-        r = requests.get(full_url, headers=OSClient.HEADERS)
+        params = {"userQuery": user_query}
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
         return r.json()
 
-    def CreateUser(self, name, password, email, role):
+    @stringnotempty(['email', 'name', 'password', 'role'])
+    def CreateUser(self, email, name, password, role):
         full_url = self.rest_prefix + OSClient.URI_USERS
-        data = {"name": name, "email": email, "password": password, "role": role}
+        data = {"email": email, "name": name, "password": password, "role": role}
         r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
         return r.json()
 
@@ -795,10 +797,10 @@ class OSClient:
         r = requests.get(full_url, headers=OSClient.HEADERS)
         return r.json()
 
-    @stringnotempty(['user_id'])
-    def UpdateUser(self, user_id, name, password, email, role):
+    @stringnotempty(['user_id', 'email', 'name', 'password', 'role'])
+    def UpdateUser(self, user_id, email, name, password, role):
         full_url = self.rest_prefix + OSClient.URI_USERS + "/" + user_id
-        data = {"name": name, "email": email, "password": password, "role": role}
+        data = {"email": email, "name": name, "password": password, "role": role}
         r = requests.put(full_url, headers=OSClient.HEADERS, json=data)
         return r.json()
 
