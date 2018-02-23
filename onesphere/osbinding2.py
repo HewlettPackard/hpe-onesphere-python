@@ -828,16 +828,36 @@ class OSClient:
 
     # Volumes APIs
 
-    def GetVolumes(self, query):
+    # view: "full"
+    def GetVolumes(self, query="", view="full"):
         full_url = self.rest_prefix + OSClient.URI_VOLUMES
-        params = {"query": query}
+        params = {"query": query, "view": view}
         r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
+        return r.json()
+
+    def CreateVolume(self, name, size_gib, zone_uri, project_uri):
+        full_url = self.rest_prefix + OSClient.URI_VOLUMES
+        data = {"name": name, "sizeGiB": size_gib, "zoneUri": zone_uri, "projectUri": project_uri}
+        r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
         return r.json()
 
     @stringnotempty(['volume_id'])
     def GetVolume(self, volume_id):
         full_url = self.rest_prefix + OSClient.URI_VOLUMES + "/" + volume_id
         r = requests.get(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
+    @stringnotempty(['volume_id'])
+    def UpdateVolume(self, volume_id, name, size_gib):
+        full_url = self.rest_prefix + OSClient.URI_VOLUMES + "/" + volume_id
+        data = {"name": name, "sizeGiB": size_gib}
+        r = requests.put(full_url, headers=OSClient.HEADERS, json=data)
+        return r.json()
+
+    @stringnotempty(['volume_id'])
+    def DeleteVolume(self, volume_id):
+        full_url = self.rest_prefix + OSClient.URI_VOLUMES + "/" + volume_id
+        r = requests.delete(full_url, headers=OSClient.HEADERS)
         return r.json()
 
     # Zone Types APIs
