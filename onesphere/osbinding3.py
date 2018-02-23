@@ -814,11 +814,9 @@ class OSClient:
 
     # Virtual Machine Profiles APIs
 
-    def GetVirtualMachineProfiles(self, query, zone_uri, service_uri):
+    def GetVirtualMachineProfiles(self, zone_uri="", service_uri=""):
         full_url = self.rest_prefix + OSClient.URI_VIRTUAL_MACHINE_PROFILES
-        params = {"q": query, 
-                  "zoneUri": zone_uri,
-                  "serviceUri": service_uri}
+        params = {"zoneUri": zone_uri, "serviceUri": service_uri}
         r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
         return r.json()
 
