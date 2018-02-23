@@ -867,6 +867,11 @@ class OSClient:
         r = requests.get(full_url, headers=OSClient.HEADERS)
         return r.json()
 
+    def GetZoneTypeResourceProfiles(self, zone_type_id):
+        full_url = self.rest_prefix + OSClient.URI_ZONE_TYPES + "/" + zone_type_id + "resource-profiles"
+        r = requests.get(full_url, headers=OSClient.HEADERS)
+        return r.json()
+
     # Zones APIs
 
     def GetZones(self, region_uri, query):
