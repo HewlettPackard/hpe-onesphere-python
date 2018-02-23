@@ -784,6 +784,7 @@ class OSClient:
         r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
         return r.json()
 
+    # role: "administrator|analyst|consumer|project-creator"
     @stringnotempty(['email', 'name', 'password', 'role'])
     def CreateUser(self, email, name, password, role):
         full_url = self.rest_prefix + OSClient.URI_USERS
@@ -797,6 +798,7 @@ class OSClient:
         r = requests.get(full_url, headers=OSClient.HEADERS)
         return r.json()
 
+    # role: "administrator|analyst|consumer|project-creator"
     @stringnotempty(['user_id', 'email', 'name', 'password', 'role'])
     def UpdateUser(self, user_id, email, name, password, role):
         full_url = self.rest_prefix + OSClient.URI_USERS + "/" + user_id
