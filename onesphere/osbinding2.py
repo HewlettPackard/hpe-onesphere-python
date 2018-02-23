@@ -718,6 +718,7 @@ class OSClient:
 
     # Tag Keys APIs
 
+    # view: "full"
     def GetTagKeys(self, view="full"):
         full_url = self.rest_prefix + OSClient.URI_TAG_KEYS
         params = {"view": view}
@@ -731,6 +732,7 @@ class OSClient:
         r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
         return r.json()
 
+    # view: "full"
     @stringnotempty(['tag_key_id'])
     def GetTagKey(self, tag_key_id, view="full"):
         full_url = self.rest_prefix + OSClient.URI_TAG_KEYS + "/" + tag_key_id
@@ -746,6 +748,7 @@ class OSClient:
 
     # Tags APIs
 
+    # view: "full"
     def GetTags(self, view="full"):
         full_url = self.rest_prefix + OSClient.URI_TAGS
         params = {"view": view}
@@ -759,6 +762,7 @@ class OSClient:
         r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
         return r.json()
 
+    # view: "full"
     @stringnotempty(['tag_id'])
     def GetTag(self, tag_id, view="full"):
         full_url = self.rest_prefix + OSClient.URI_TAGS + "/" + tag_id
