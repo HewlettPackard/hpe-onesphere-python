@@ -172,10 +172,6 @@ class OSClient:
     def UpdateAppliance(self, appliance_id, info_array):
         if (len(info_array) == 0):
             raise Exception("info_array should be a non-empty array.")
-        try:
-            json.loads(info_array)
-        except ValueError:
-            raise Exception("info_array should be in JSON format.")
         full_url = self.rest_prefix + OSClient.URI_APPLIANCES + "/" + appliance_id
         r = requests.put(full_url, headers=OSClient.HEADERS, json=info_array)
         return r.json()
@@ -261,11 +257,8 @@ class OSClient:
         r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
         return r.json()
 
+    # info: in json format
     def CreateDeployment(self, info):
-        try:
-            json.loads(info)
-        except ValueError:
-            raise Exception("info should be in JSON format.")
         full_url = self.rest_prefix + OSClient.URI_DEPLOYMENTS
         r = requests.post(full_url, headers=OSClient.HEADERS, json=info)
         return r.json()
@@ -277,12 +270,9 @@ class OSClient:
         r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
         return r.json()
 
+    # info: in json format
     @stringnotempty(['deployment_id'])
     def UpdateDeployment(self, deployment_id, info):
-        try:
-            json.loads(info)
-        except ValueError:
-            raise Exception("info should be in JSON format.")
         full_url = self.rest_prefix + OSClient.URI_DEPLOYMENTS + "/" + deployment_id
         r = requests.put(full_url, headers=OSClient.HEADERS, json=info)
         return r.json()
@@ -395,10 +385,6 @@ class OSClient:
     def UpdateNetwork(self, network_id, info_array):
         if (len(info_array) == 0):
             raise Exception("info_array should be a non-empty array.")
-        try:
-            json.loads(info_array)
-        except ValueError:
-            raise Exception("info_array should be in JSON format.")
         full_url = self.rest_prefix + OSClient.URI_NETWORKS + "/" + network_id
         r = requests.put(full_url, headers=OSClient.HEADERS, json=info_array)
         return r.json()
@@ -521,10 +507,6 @@ class OSClient:
     def UpdateProvider(self, provider_id, info_array):
         if (len(info_array) == 0):
             raise Exception("info_array should be a non-empty array.")
-        try:
-            json.loads(info_array)
-        except ValueError:
-            raise Exception("info_array should be in JSON format.")
         full_url = self.rest_prefix + OSClient.URI_PROVIDERS + "/" + provider_id
         r = requests.put(full_url, headers=OSClient.HEADERS, json=info_array)
         return r.json()
@@ -599,21 +581,14 @@ class OSClient:
     def PatchRegion(self, region_id, info_array):
         if (len(info_array) == 0):
             raise Exception("info_array should be a non-empty array.")
-        try:
-            json.loads(info_array)
-        except ValueError:
-            raise Exception("info_array should be in JSON format.")
         full_url = self.rest_prefix + OSClient.URI_REGIONS + "/" + region_id
         r = requests.put(full_url, headers=OSClient.HEADERS, json=info_array)
         return r.json()
 
+    # region: in json format
     @notimplementedyet
     @stringnotempty(['region_id'])
     def UpdateRegion(self, region_id, region):
-        try:
-            json.loads(region)
-        except ValueError:
-            raise Exception("region should be in JSON format.")
         full_url = self.rest_prefix + OSClient.URI_REGIONS + "/" + region_id
         r = requests.put(full_url, headers=OSClient.HEADERS, json=region)
         return r.json()
@@ -880,12 +855,9 @@ class OSClient:
         r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
         return r.json()
 
+    # zone_data: in json format
     def CreateZone(self, zone_data):
         full_url = self.rest_prefix + OSClient.URI_ZONES
-        try:
-            json.loads(zone_data)
-        except ValueError:
-            raise Exception("zone_data should be in JSON format.")
         r = requests.post(full_url, headers=OSClient.HEADERS, json=zone_data)
         return r.json()
 
