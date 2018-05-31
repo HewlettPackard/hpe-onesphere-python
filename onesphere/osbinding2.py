@@ -222,6 +222,8 @@ class OSClient:
     def DeleteCatalog(self, catalog_id):
         full_url = self.rest_prefix + OSClient.URI_CATALOGS + "/" + catalog_id
         r = requests.delete(full_url, headers=OSClient.HEADERS)
+        if r.status_code == 204:
+            return {}
         return r.json()
 
     @stringnotempty(['catalog_id', 'name', 'password', 'access_key', 'secret_key', 'region_name', 'state'])
@@ -281,6 +283,8 @@ class OSClient:
     def DeleteDeployment(self, deployment_id):
         full_url = self.rest_prefix + OSClient.URI_DEPLOYMENTS + "/" + deployment_id
         r = requests.delete(full_url, headers=OSClient.HEADERS)
+        if r.status_code == 204:
+            return {}
         return r.json()
 
     # action_type: one of restart|resume|start|stop|suspend.
@@ -291,6 +295,8 @@ class OSClient:
         full_url = self.rest_prefix + OSClient.URI_DEPLOYMENTS + "/" + deployment_id + "/actions"
         data = {"force": force, "type": action_type}
         r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
+        if r.status_code == 200:
+            return {}
         return r.json()
 
     @stringnotempty(['deployment_id'])
@@ -345,6 +351,8 @@ class OSClient:
         full_url = self.rest_prefix + OSClient.URI_MEMBERSHIPS
         data = {"userUri": user_uri, "membershipRoleUri": role_uri, "projectUri": project_uri}
         r = requests.delete(full_url, headers=OSClient.HEADERS, json=data)
+        if r.status_code == 204:
+            return {}
         return r.json()
 
     # Metrics APIs
@@ -396,6 +404,8 @@ class OSClient:
         full_url = self.rest_prefix + OSClient.URI_PASSWORD_RESET
         data = {"email": email}
         r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
+        if r.status_code == 202:
+            return {}
         return r.json()
 
     @stringnotempty(['password', 'token'])
@@ -439,6 +449,8 @@ class OSClient:
     def DeleteProject(self, project_id):
         full_url = self.rest_prefix + OSClient.URI_PROJECTS + "/" + project_id
         r = requests.delete(full_url, headers=OSClient.HEADERS)
+        if r.status_code == 204:
+            return {}
         return r.json()
 
     @stringnotempty(['project_id', 'name', 'description', 'tag_uris'])
@@ -499,6 +511,8 @@ class OSClient:
     def DeleteProvider(self, provider_id):
         full_url = self.rest_prefix + OSClient.URI_PROVIDERS + "/" + provider_id
         r = requests.delete(full_url, headers=OSClient.HEADERS)
+        if r.status_code == 204:
+            return {}
         return r.json()
 
     # info_array: [{op, path, value}]
@@ -623,6 +637,8 @@ class OSClient:
     def DeleteRegionConnection(self, region_id):
         full_url = self.rest_prefix + OSClient.URI_REGIONS + "/" + region_id + "/connection"
         r = requests.delete(full_url, headers=OSClient.HEADERS)
+        if r.status_code == 204:
+            return {}
         return r.json()
 
     @stringnotempty(['region_id'])
@@ -719,6 +735,8 @@ class OSClient:
     def DeleteTagKey(self, tag_key_id):
         full_url = self.rest_prefix + OSClient.URI_TAG_KEYS + "/" + tag_key_id
         r = requests.delete(full_url, headers=OSClient.HEADERS)
+        if r.status_code == 204:
+            return {}
         return r.json()
 
     # Tags APIs
@@ -749,6 +767,8 @@ class OSClient:
     def DeleteTag(self, tag_id):
         full_url = self.rest_prefix + OSClient.URI_TAGS + "/" + tag_id
         r = requests.delete(full_url, headers=OSClient.HEADERS)
+        if r.status_code == 204:
+            return {}
         return r.json()
 
     # Users APIs
@@ -785,6 +805,8 @@ class OSClient:
     def DeleteUser(self, user_id):
         full_url = self.rest_prefix + OSClient.URI_USERS + "/" + user_id
         r = requests.delete(full_url, headers=OSClient.HEADERS)
+        if r.status_code == 204:
+            return {}
         return r.json()
 
     # Virtual Machine Profiles APIs
@@ -833,6 +855,8 @@ class OSClient:
     def DeleteVolume(self, volume_id):
         full_url = self.rest_prefix + OSClient.URI_VOLUMES + "/" + volume_id
         r = requests.delete(full_url, headers=OSClient.HEADERS)
+        if r.status_code == 202:
+            return {}
         return r.json()
 
     # Zone Types APIs
@@ -894,6 +918,8 @@ class OSClient:
                     "resourceType": resource_type,
                     "resourceCapacity": resource_capacity}}
         r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
+        if r.status_code == 202:
+            return {}
         return r.json()
 
     @stringnotempty(['zone_id'])
