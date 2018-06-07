@@ -38,8 +38,8 @@ def stringnotempty(arguments):
         def check_args(*args, **kwargs):
             code = func.__code__
             names = list(code.co_varnames[:code.co_argcount])
-            print(names)
-            print(args)
+            #print(names)
+            #print(args)
             for argument in arguments:
                 num = names.index(argument)
                 value = args[num]
@@ -339,14 +339,14 @@ class OSClient:
         r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
         return r.json()
 
-    @stringnotempty(['user_uri, role_uri, project_uri'])
+    @stringnotempty(['user_uri', 'role_uri', 'project_uri'])
     def CreateMembership(self, user_uri, role_uri, project_uri):
         full_url = self.rest_prefix + OSClient.URI_MEMBERSHIPS
         data = {"userUri": user_uri, "membershipRoleUri": role_uri, "projectUri": project_uri}
         r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
         return r.json()
 
-    @stringnotempty(['user_uri, role_uri, project_uri'])
+    @stringnotempty(['user_uri', 'role_uri', 'project_uri'])
     def DeleteMembership(self, user_uri, role_uri, workspace_uri):
         full_url = self.rest_prefix + OSClient.URI_MEMBERSHIPS
         data = {"userUri": user_uri, "membershipRoleUri": role_uri, "projectUri": project_uri}
