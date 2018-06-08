@@ -38,8 +38,8 @@ def stringnotempty(arguments):
         def check_args(*args, **kwargs):
             code = func.__code__
             names = list(code.co_varnames[:code.co_argcount])
-            print(names)
-            print(args)
+            #print(names)
+            #print(args)
             for argument in arguments:
                 num = names.index(argument)
                 value = args[num]
