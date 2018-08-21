@@ -58,6 +58,7 @@ class OSClient:
 
     URI_ACCOUNT                     = "/account"
     URI_APPLIANCES                  = "/appliances"
+    URI_BILLING_ACCOUNTS            = "/billing-accounts"
     URI_CATALOG_TYPES               = "/catalog-types"
     URI_CATALOGS                    = "/catalogs"
     URI_CONNECT_APP                 = "/connect-app"
@@ -174,6 +175,51 @@ class OSClient:
             raise Exception("info_array should be a non-empty array.")
         full_url = self.rest_prefix + OSClient.URI_APPLIANCES + "/" + appliance_id
         r = requests.put(full_url, headers=OSClient.HEADERS, json=info_array)
+        return r.json()
+
+    # Billing Accounts APIs
+
+    # view: "full" - return related content
+    def GetBillingAccounts(self, query="", view=""):
+        full_url = self.rest_prefix + OSClient.URI_BILLING_ACCOUNTS
+        params = {}
+        if query.strip():
+            params["query"] = user_query.strip()
+        if view.strip():
+            params["view"] = view.strip()
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
+        return r.json()
+
+    @stringnotempty(['api_access_key', 'description', 'directory_uri', 'enroll_num', 'name', 'provider_type_uri'])
+    def CreateBillingAccount(self, api_access_key, description, directory_uri, enroll_num, name, provider_type_uril):
+        full_url = self.rest_prefix + OSClient.URI_BILLING_ACCOUNTS
+        data = {"apiAccessKey": api_access_key, 
+                "description": description, 
+                "directoryUri": directory_uri, 
+                "enrollmentNumber": enroll_num, 
+                "name": name, 
+                "providerTypeUri": provider_type_uri} 
+        r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
+        return r.json()
+
+    @stringnotempty(['billing_account_id'])
+    def DeleteBillingAccount(self, billing_account_id):
+        full_url = self.rest_prefix + OSClient.URI_BILLING_ACCOUNTS + "/" + billing_account_id 
+        r = requests.delete(full_url, headers=OSClient.HEADERS)
+        return {'status': r.status_code}
+
+    @stringnotempty(['billing_account_id'])
+    def GetBillingAccount(self, billing_account_id, view):
+        full_url = self.rest_prefix + OSClient.URI_BILLING_ACCOUNTS + "/" + billing_account_id
+        params = {"view": view}
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
+        return r.json()
+
+    # info: in json format
+    @stringnotempty(['billing_account_id'])
+    def UpdateBillingAccount(self, billing_account_id, info):
+        full_url = self.rest_prefix + OSClient.URI_BILLING_ACCOUNTS + "/" + billing_account_id
+        r = requests.put(full_url, headers=OSClient.HEADERS, json=info)
         return r.json()
 
     # Catalog Types APIs
