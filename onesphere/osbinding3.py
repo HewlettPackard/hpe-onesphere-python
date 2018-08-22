@@ -429,9 +429,10 @@ class OSClient:
         return r.json()
 
     @stringnotempty(['network_id'])
-    def GetNetwork(self, network_id):
+    def GetNetwork(self, network_id, query):
         full_url = self.rest_prefix + OSClient.URI_NETWORKS + "/" + network_id
-        r = requests.get(full_url, headers=OSClient.HEADERS)
+        params = {"query": query}
+        r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
         return r.json()
 
     # info_array: [{op, path, value}]
