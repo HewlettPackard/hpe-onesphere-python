@@ -140,6 +140,9 @@ class OSClient:
         if region_uri.strip():
             params["regionUri"] = region_uri
         r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
+        #r.raise_for_status()
+        if r.status_code != 200:
+            return {'status': r.status_code, 'message': r.text}
         return r.json()
 
     def CreateAppliance(self, ep_address, ep_username, ep_password, 
@@ -465,7 +468,7 @@ class OSClient:
     # Projects APIs
 
     # view: "full" - return related content
-    def GetProjects(self, user_query="", view=""):
+    def GetProjects(self, user_query="", view="full"):
         full_url = self.rest_prefix + OSClient.URI_PROJECTS
         params = {}
         if user_query.strip():
@@ -485,13 +488,12 @@ class OSClient:
         return r.json()
 
     @stringnotempty(['project_id'])
-    def GetProject(self, project_id, view):
+    def GetProject(self, project_id, view="full"):
         full_url = self.rest_prefix + OSClient.URI_PROJECTS + "/" + project_id
-        params = {"view", view}
+        params = {"view": view}
         r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
         return r.json()
 
-    @notimplementedyet
     @stringnotempty(['project_id'])
     def DeleteProject(self, project_id):
         full_url = self.rest_prefix + OSClient.URI_PROJECTS + "/" + project_id
