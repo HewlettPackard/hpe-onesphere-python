@@ -382,10 +382,11 @@ class OSClient:
 
     # Memberships APIs
 
-    @stringnotempty(['query'])
-    def GetMemberships(self, query):
+    def GetMemberships(self, query=""):
         full_url = self.rest_prefix + OSClient.URI_MEMBERSHIPS
-        params = {"query": query}
+        params = {}
+        if query.strip():
+            params["query"] = query.strip()
         r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
         return r.json()
 
@@ -426,6 +427,7 @@ class OSClient:
 
     # Networks APIs
 
+    @stringnotempty(['query'])
     def GetNetworks(self, query):
         full_url = self.rest_prefix + OSClient.URI_NETWORKS
         params = {"query": query}
