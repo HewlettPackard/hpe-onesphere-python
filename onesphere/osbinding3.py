@@ -89,6 +89,7 @@ class OSClient:
     URI_WORKSPACES                  = "/workspaces"
     URI_ZONE_TYPES                  = "/zone-types"
     URI_ZONES                       = "/zones"
+    URI_VERSIONS                    = "/about/versions"
 
     HEADERS = {'Accept': 'application/json', 'Content-Type': 'application/json'}
 
@@ -1017,5 +1018,12 @@ class OSClient:
         full_url = self.rest_prefix + OSClient.URI_ZONES + "/" + zone_id + "/connections/" + uuid
         data = {"op": op, "path": path, "value": value}
         r = requests.put(full_url, headers=OSClient.HEADERS, json=data)
+        return r.json()
+
+    # Version APIs
+
+    def GetVersion(self):
+        full_url = self.rest_prefix + OSClient.URI_VERSIONS
+        r = requests.get(full_url, headers=OSClient.HEADERS)
         return r.json()
 
