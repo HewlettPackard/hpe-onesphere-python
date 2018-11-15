@@ -111,7 +111,7 @@ class OSClient:
         data = {'userName': self.username, 'password': self.password}
         r = requests.post(full_url, headers=OSClient.HEADERS, json=data)
         r_json = r.json()
-        if r.status_code != 200:
+        if r.status_code != 200 and r.status_code != 201:
             raise Exception(r_json["message"])
         else:
             self.token = r_json["token"]
