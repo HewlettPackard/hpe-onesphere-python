@@ -398,7 +398,7 @@ class OSClient:
         return r.json()
 
     @stringnotempty(['user_uri, role_uri, project_uri'])
-    def DeleteMembership(self, user_uri, role_uri, workspace_uri):
+    def DeleteMembership(self, user_uri, role_uri, project_uri):
         full_url = self.rest_prefix + OSClient.URI_MEMBERSHIPS
         data = {"userUri": user_uri, "membershipRoleUri": role_uri, "projectUri": project_uri}
         r = requests.delete(full_url, headers=OSClient.HEADERS, json=data)
@@ -411,17 +411,25 @@ class OSClient:
     def GetMetrics(self, resource_uri, category, group_by, query, name, 
                    period_start, period, period_count, view, start, count):
         full_url = self.rest_prefix + OSClient.URI_METRICS
-        params = {"resourceUri": resource_uri, 
-                "category": category,
-                "groupBy": group_by,
-                "query": query,
-                "name": name,
-                "periodStart": period_start,
-                "period": period,
-                "periodCount": period_count,
-                "view": view,
-                "start": start,
-                "count": count}
+        params = {"name": name, "period": period}
+        if resource_uri.strip():
+            params["resourceUri"] = resource_uri.strip()
+        if category.strip():
+            params["category"] = category.strip()
+        if group_by.strip():
+            params["groupBy"] = group_by.strip()
+        if query.strip():
+            params["query"] = query.strip()
+        if period_start.strip():
+            params["periodStart"] = period_start.strip()
+        if period_count.strip():
+            params["periodCount"] = period_count.strip()
+        if view.strip():
+            params["view"] = view.strip()
+        if start.strip():
+            params["start"] = start.strip()
+        if count.strip():
+            params["count"] = count.strip()
         r = requests.get(full_url, headers=OSClient.HEADERS, params=params)
         return r.json()
 
@@ -533,8 +541,7 @@ class OSClient:
     # payment_provider: True|False
     # state: "Enabled|Disabled"
     @stringnotempty(['provider_id', 'provider_type_uri', 
-                     'access_key', 'secret_key',
-                     'payment_provider', 's3_cost_bucket',
+                     'access_key', 'secret_key', 's3_cost_bucket',
                      'master_uri', 'state'])
     def CreateProvider(self, provider_id, provider_type_uri, 
                        access_key, secret_key,
@@ -919,7 +926,7 @@ class OSClient:
         return r.json()
 
     def GetZoneTypeResourceProfiles(self, zone_type_id):
-        full_url = self.rest_prefix + OSClient.URI_ZONE_TYPES + "/" + zone_type_id + "resource-profiles"
+        full_url = self.rest_prefix + OSClient.URI_ZONE_TYPES + "/" + zone_type_id + "/resource-profiles"
         r = requests.get(full_url, headers=OSClient.HEADERS)
         return r.json()
 
